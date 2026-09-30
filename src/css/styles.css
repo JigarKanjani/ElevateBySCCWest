@@ -853,3 +853,23 @@ img, svg, canvas { max-width:100%; height:auto; }
 }
 @keyframes evshim { from{background-position:200% 0} to{background-position:-200% 0} }
 @media (prefers-reduced-motion: reduce) { .evskel i { animation:none; } }
+
+/* After an answer the challenge controls are disabled so they cannot be
+   changed — but they are also the feedback the reader most needs to study.
+   The browser's default disabled treatment washed the text to roughly 2.3:1
+   over white, so disabled state here removes interactivity WITHOUT removing
+   legibility: full-strength text, no pointer, no focus. */
+.docline:disabled, .bucketbtn:disabled, .orderpick:disabled,
+.pickopt:disabled, .numin:disabled, .slidein:disabled {
+  opacity:1; cursor:default; color:var(--ink);
+}
+.docline:disabled .docline-t { color:var(--ink); }
+.docline:disabled .docline-h { color:var(--ink-3); }
+.bucketbtn:disabled { color:var(--ink-2); }
+.bucketbtn.on:disabled { color:#fff; }
+.pickopt:disabled { color:var(--ink); }
+.numin:disabled { color:var(--heading); -webkit-text-fill-color:var(--heading); }
+/* Safari applies its own greying to disabled form text */
+.docline:disabled, .pickopt:disabled, .orderpick:disabled {
+  -webkit-text-fill-color:currentColor;
+}
