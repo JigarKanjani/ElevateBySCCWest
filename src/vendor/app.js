@@ -483,12 +483,17 @@ function vResults() {
 
   var hrs = Math.max(1, Math.round(path.minutes / 60));
 
+  /* Only claim the path covers a gap if a course actually addresses it. */
+  var coveredDoms = {};
+  path.recs.forEach(function (r) { coveredDoms[r.domain.id] = true; });
+  var coveredCount = short.filter(function (d) { return coveredDoms[d.id]; }).length;
+
   var plain = met.length === scored.length
     ? "You are already at the level this job needs in every skill area."
     : "You are at the level this job needs in " + met.length + " of " + scored.length +
       " skill areas. " + short.length + " still " + (short.length === 1 ? "needs" : "need") + " work.";
 
-  return '<div class="section"><div class="wrap">' + stepper(4) +
+  return '<div class="section"><div class="wrap wrap-wide">' + stepper(4) +
 
     /* ---- headline ---- */
     '<div class="scorehero fadein">' +
@@ -504,27 +509,36 @@ function vResults() {
 
     /* ---- the four numbers that matter ---- */
     '<div class="tiles">' +
-      '<div class="tile ok"><div class="tl">At the level</div><div class="tv">' + met.length +
+      '<div class="tile ok"><div class="tl">Already there</div><div class="tv">' + met.length +
         ' <span style="font-size:.9rem;color:var(--ink-3);font-weight:600">of ' + scored.length + '</span></div>' +
-        '<div class="tn">Ready for this role</div></div>' +
-      '<div class="tile gap"><div class="tl">Needs work</div><div class="tv">' + short.length + '</div>' +
-        '<div class="tn">' + (short.length ? 'Covered by your learning path' : 'Nothing outstanding') + '</div></div>' +
-      '<div class="tile"><div class="tl">Biggest gap</div><div class="tv" style="font-size:1.02rem;line-height:1.3">' +
+        '<div class="tn">' + (met.length ? 'Nothing to do in these' : 'None yet — that is normal at the start') + '</div></div>' +
+      '<div class="tile gap"><div class="tl">Still to close</div><div class="tv">' + short.length + '</div>' +
+        '<div class="tn">' + (short.length
+            ? (coveredCount === short.length
+                ? 'Every one has a course below'
+                : coveredCount + ' of ' + short.length + ' have a course below')
+            : 'Nothing outstanding') + '</div></div>' +
+      '<div class="tile"><div class="tl">Start here</div><div class="tv" style="font-size:1.02rem;line-height:1.3">' +
         (biggest ? esc(biggest.name) : '—') + '</div>' +
-        '<div class="tn">' + (biggest ? sc.domains[biggest.id].gap + ' levels to close' : 'None') + '</div></div>' +
-      '<div class="tile"><div class="tl">Study time</div><div class="tv">' + hrs + 'h</div>' +
-        '<div class="tn">' + path.cpd + ' CPD hours</div></div>' +
+        '<div class="tn">' + (biggest
+            ? 'Your widest gap — ' + sc.domains[biggest.id].gap + ' level' +
+              (sc.domains[biggest.id].gap === 1 ? '' : 's')
+            : 'No gaps to close') + '</div></div>' +
+      '<div class="tile"><div class="tl">Time to close it</div><div class="tv">' + hrs + 'h</div>' +
+        '<div class="tn">of reading, at your own pace</div></div>' +
     '</div>' +
 
+    '<div class="notice-row">' +
     (sc.skipped
-      ? '<div class="notice" style="margin-bottom:14px"><b>You skipped the challenges.</b> ' +
+      ? '<div class="notice"><b>You skipped the challenges.</b> ' +
         'Everything below is read from your resume alone, so each level is capped at ' +
         '<b>Developing</b> — a resume can show what you have been exposed to, but it cannot ' +
         'show judgement. <a href="#" onclick="startQuiz();return false">Take the challenges</a> ' +
         'to lift the cap and get a real level.</div>'
       : '') +
-    '<div class="notice notice-info" style="margin-bottom:22px"><b>What this means.</b> ' + esc(plain) +
+    '<div class="notice notice-info"><b>What this means.</b> ' + esc(plain) +
     ' Your answers were compared with what this job needs, not with other people.</div>' +
+    '</div>' +
 
     /* ---- the gap chart ---- */
     '<div class="card card-pad">' +
@@ -583,9 +597,10 @@ function vResults() {
     '<div class="card card-pad" style="margin-top:20px">' +
       '<h3>What to do next</h3>' +
       (path.recs.length
-        ? '<p class="muted">We picked <b>' + path.recs.length + ' courses</b> that close the gaps above, ' +
-          'in the order that gets you to the benchmark fastest. That is <b>' + path.lessons +
-          ' lessons</b>, roughly <b>' + hrs + ' hours</b>, worth <b>' + path.cpd + ' CPD hours</b>.</p>'
+        ? '<p class="muted">Close these and you are at the level this job asks for. ' +
+          'We sequenced <b>' + path.recs.length + ' courses</b> to get you there fastest — <b>' +
+          path.lessons + ' lessons</b>, about <b>' + hrs + ' hours</b> of reading, at your own pace. ' +
+          'Start with ' + (biggest ? '<b>' + esc(biggest.name) + '</b>' : 'the first one') + '.</p>'
         : '<p class="muted">You have no outstanding gaps for this role. Browse the full catalogue ' +
           'to go deeper, or reassess against a more senior track.</p>') +
       '<div class="cta-row">' +
@@ -654,7 +669,7 @@ function evCard(e) {
 
   var facts = [];
   if (e.time) facts.push(esc(e.time));
-  if (e.cpd) facts.push('<b>' + e.cpd + ' CPD</b>');
+  if (e.cpd) facts.push('<b>' + e.cpd + ' CPD credit' + (e.cpd === 1 ? '' : 's') + '</b>');
   if (e.memberFee) facts.push("Members " + esc(e.memberFee));
 
   return '<a class="evcard" href="' + esc(e.url) + '" target="_blank" rel="noopener noreferrer">' +
@@ -683,19 +698,35 @@ function evInner() {
   return rankEvents(EV.events).map(evCard).join("") +
     '<a class="btn btn-ghost btn-sm" style="margin-top:12px" ' +
     'href="https://www.supplychaincanada.com/events" target="_blank" rel="noopener noreferrer">' +
-    'See the full calendar</a>';
+    'See every event</a>';
 }
 
 function vEventsSection() {
   return '<div class="card card-pad" style="margin-top:20px">' +
-    '<h3 style="margin-bottom:4px">Coming up — book a session</h3>' +
-    '<p class="muted" style="font-size:.87rem">Live from the Supply Chain Canada calendar, ' +
-    'with the ones that close your gaps first.</p>' +
+    '<h3 style="margin-bottom:4px">Book a session that closes one of these gaps</h3>' +
+    '<p class="muted" style="font-size:.87rem">Straight from the Supply Chain Canada calendar, ' +
+    'ordered so the ones matching your widest gaps come first. ' +
+    'CPD credits are shown where the event page publishes them.</p>' +
     '<div id="evhost" class="evlist">' + evInner() + '</div>' +
     '</div>';
 }
 
 /* ---------------- learning path ---------------- */
+/* Real delivery time for a course, summed from its lessons. Used in place of
+   the catalogue's "cpd" field, which is unverified prototype data: the full
+   catalogue declares 100 against 7.8 hours of actual lesson content, and CPD is
+   counted in credits awarded by the association, not in hours of reading. */
+function courseMinutes(c) {
+  var m = 0;
+  c.modules.forEach(function (mod) { mod.lessons.forEach(function (l) { m += l.mins || 0; }); });
+  return m;
+}
+function readTime(mins) {
+  if (mins < 60) return mins + " min";
+  var h = Math.floor(mins / 60), r = mins % 60;
+  return r ? h + "h " + r + "m" : h + "h";
+}
+
 function courseProgress(c) {
   var done = 0;
   c.modules.forEach(function (m) { m.lessons.forEach(function (l) { if (S.progress[l.uid]) done++; }); });
@@ -717,7 +748,7 @@ function vPath() {
       '<span class="ic">' + r.domain.icon + "</span><div style='flex:1;min-width:0'>" +
       '<div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-bottom:5px">' +
       '<span class="pill prio' + (i < 2 ? "-1" : i < 4 ? "-2" : "-3") + '">Priority ' + (i + 1) + "</span>" +
-      '<span class="pill">' + r.course.cpd + " CPD hrs</span>" +
+      '<span class="pill">' + readTime(courseMinutes(r.course)) + "</span>" +
       '<span class="pill">' + r.course.lessonCount + " lessons</span></div>" +
       "<h3>" + esc(r.course.title) + "</h3><p>" + esc(r.course.blurb) + "</p>" +
       '<div class="muted" style="font-size:.82rem">Closes a ' + r.gap + "-level gap in " +
@@ -751,7 +782,7 @@ function vPath() {
         return '<div class="card card-pad" style="display:flex;gap:12px;align-items:flex-start">' +
           '<span style="font-size:1.3rem">' + d.icon + "</span><div style='flex:1'>" +
           "<h3 style='font-size:.97rem;margin-bottom:3px'>" + esc(c.title) + "</h3>" +
-          '<p class="muted" style="font-size:.84rem;margin:0 0 8px">' + c.lessonCount + " lessons · " + c.cpd + " CPD hrs</p>" +
+          '<p class="muted" style="font-size:.84rem;margin:0 0 8px">' + c.lessonCount + " lessons · " + readTime(courseMinutes(c)) + "</p>" +
           '<button class="btn btn-ghost btn-sm" onclick="openCourse(\'' + c.id + '\')">Open</button></div></div>';
       }).join("") + "</div>" : "") +
     "</div></div>";
@@ -862,7 +893,7 @@ function completeLesson(uid, idx) {
   if (idx < flat.length - 1) go("lesson", { lesson: flat[idx + 1].uid });
   else {
     go("path");
-    toast("Course complete. " + f.course.cpd + " CPD hours logged against your profile.");
+    toast("Course complete. Nice work.");
   }
 }
 
@@ -889,7 +920,7 @@ function vPricing() {
         '<div><div class="fp-h fp-paid">Members only</div><ul class="fp-list">' +
           '<li>Every lesson, start to finish</li>' +
           '<li>Checkpoint quizzes and course certificates</li>' +
-          '<li>CPD hours logged for you</li>' +
+          '<li>CPD credits tracked for you</li>' +
           '<li>Reassess each quarter to see movement</li>' +
         '</ul></div>' +
       '</div>' +
@@ -908,7 +939,7 @@ function vPricing() {
         ["Everything in Free",
          "All " + TOTAL_LESSONS + " lessons across " + COURSES.length + " courses",
          "Checkpoint quizzes and certificates",
-         "CPD hours logged automatically",
+         "CPD credits tracked automatically",
          "Reassess quarterly"],
         "Choose monthly", "demoNote()", true) +
       price("Yearly", "$290", "per year — two months free",

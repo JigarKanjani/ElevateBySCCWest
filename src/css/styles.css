@@ -104,7 +104,7 @@
 body { margin:0; }
 body {
   font-family:var(--font); color:var(--ink); background:var(--paper-2);
-  -webkit-font-smoothing:antialiased; line-height:1.6; font-size:16px;
+  -webkit-font-smoothing:antialiased; line-height:1.6; font-size:1rem;
 }
 /* Guide 03: headline = Bold, sub/box title = Semi Bold, body = Light/Regular.
    Guide 03.1: headline colour is HEX ED1C24; the super title is black. */
@@ -457,10 +457,38 @@ img, svg, canvas { max-width:100%; height:auto; }
   .card-pad { padding:16px; }
 }
 
-/* Large desktops: let the shell breathe rather than stranding it at 1120px. */
-@media(min-width:1440px) {
-  :root { --max:1200px; }
+/* ------------------------------------------------------------------ *
+   Large screens
+   A 1920px monitor was leaving ~350px dead on each side. Rather than just
+   stretching the boxes, the root font size steps up, so every rem-based
+   size — type, padding, radii, gaps — grows together and the page reads as
+   zoomed in rather than spread out. The container widens alongside it.
+
+   Prose keeps its own ch-based caps (see below) so wider never means
+   unreadably long lines; only the data-dense report takes the full width.
+   Nothing here applies below 1400px, so phone and tablet are untouched.
+ * ------------------------------------------------------------------ */
+@media(min-width:1400px) {
+  html { font-size:17px; }
+  :root { --max:1340px; }
 }
+@media(min-width:1700px) {
+  html { font-size:18px; }
+  :root { --max:1500px; }
+}
+@media(min-width:2000px) {
+  html { font-size:19px; }
+  :root { --max:1620px; }
+}
+/* .wrap-wide is retained as a no-op alias: one width keeps the topbar, hero
+   and report on the same left edge. Two widths put the logo 100px inboard of
+   the report underneath it, which read as a broken grid. */
+.wrap-wide { max-width:var(--max); }
+
+/* Keep measure readable however wide the shell gets. */
+.lesson-body, .lesson-body p { max-width:72ch; }
+.hero .lede { max-width:52ch; }
+.bullet-note, .keypoints li { max-width:88ch; }
 
 @media (prefers-reduced-motion: reduce) {
   .fadein { animation:none; }
@@ -873,3 +901,27 @@ img, svg, canvas { max-width:100%; height:auto; }
 .docline:disabled, .pickopt:disabled, .orderpick:disabled {
   -webkit-text-fill-color:currentColor;
 }
+
+/* ------------------------------------------------------------------ *
+   Measure
+   Widening the shell made prose run to 190 characters a line at 1920px.
+   Anything past about 75 is hard to track back to the next line, so text
+   blocks get a ch-based cap while grids, rows and charts keep the full
+   width. The cap is in ch, so it scales with the root font step rather
+   than fighting it.
+ * ------------------------------------------------------------------ */
+.notice, .notice-info { max-width:86ch; }
+.card-pad > p, .card-pad > .muted { max-width:82ch; }
+.evbody p { max-width:88ch; }
+.bullet-note { max-width:96ch; }
+.price li, .fp-list li { max-width:60ch; }
+.qtext, .qhint { max-width:66ch; }
+.docline-t, .sortitem-l, .orderlbl, .pickbox-t { max-width:80ch; }
+.why { max-width:90ch; }
+
+
+/* Explanatory notices sit side by side once there is room, instead of
+   stopping at 60% of the container and leaving a ragged right edge. */
+.notice-row { display:grid; gap:12px; margin-bottom:22px; }
+@media(min-width:1100px) { .notice-row { grid-template-columns:1fr 1fr; align-items:start; } }
+.notice-row > .notice { max-width:none; margin:0; }

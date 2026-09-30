@@ -196,11 +196,39 @@ Encoding decisions, made against the measured numbers rather than by eye:
 Alongside it, **Resume vs assessment** names the areas where the quiz disagreed
 with the resume, in both directions — the product's central claim, made legible.
 
+## CPD
+
+CPD is measured in **credits awarded by the association**, not in hours of
+reading, and the two are different numbers on the same page. One event reads:
+
+```
+CPD CREDITS    9 Hours    5 Credits
+```
+
+— nine hours of delivery earning five credits. The extractor takes only the
+number immediately before the word "Credit"; matching the first number after the
+"CPD" label would report 9 credits, which is wrong. Events that publish no CPD
+value show none, and roughly five of twelve upcoming events do not publish one.
+
+The course catalogue's own `cpd` field is **not shown anywhere in the UI**. It is
+unverified prototype data — the full catalogue declares 100 against 7.8 hours of
+actual lesson content — and this prototype is not an accrediting body, so
+claiming credits for it would be false. Courses show real delivery time instead,
+summed from their lessons. The field is left in the data so it can be populated
+with accredited values later.
+
 ## Responsive
 
 Spacing is fluid (`clamp()`) rather than fixed, so gutters, section rhythm and
 card padding scale continuously instead of snapping at breakpoints. Verified
 with no horizontal overflow at 360, 390, 430, 768, 1024, 1366, 1600 and 1920px.
+
+On screens above 1400px the root font size steps up (17px → 18px → 19px) and the
+container widens with it, so every rem-based size grows together and the page
+reads as zoomed in rather than stretched. Prose carries `ch`-based caps so wider
+never means unreadably long lines — without them the notices ran to 191
+characters a line at 1920px. One container width is used throughout, because two
+put the logo 100px inboard of the report beneath it.
 
 | Element | Desktop | Tablet | Phone |
 |---|---|---|---|

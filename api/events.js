@@ -136,7 +136,17 @@ async function enrich(e) {
     const text = $("body").text().replace(/\s+/g, " ").trim();
 
     const time = text.match(/Time:\s*([0-9]{1,2}:[0-9]{2}\s*[AP]M[^A-Za-z]*(?:-\s*[0-9]{1,2}:[0-9]{2}\s*[AP]M)?\s*\(?[A-Z]{2,4}\)?)/);
-    const cpd  = text.match(/CPD:?\s*([0-9]+(?:\.[0-9]+)?)\s*(?:CPD\s*)?(?:Credit|Hour|Point)/i);
+
+    /* CPD is measured in CREDITS, not hours, and the two are different numbers
+       on the same page. One event reads:
+           CPD CREDITS   9 Hours   5 Credits
+       — nine hours of delivery earning five credits. Matching the first number
+       after the "CPD" label would report 9 credits, which is simply wrong, so
+       the number immediately before the word "Credit" is the only one taken.
+       Anything else is left null and the UI omits it rather than guessing. */
+    const near = text.match(/CPD[^.]{0,120}/i);
+    const cpd  = near ? near[0].match(/([0-9]+(?:\.[0-9]+)?)\s*Credits?\b/i) : null;
+
     const fee  = text.match(/Member\s*\$([0-9,]+)/);
 
     // first substantial sentence after the title makes a serviceable brief
