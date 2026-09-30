@@ -568,7 +568,7 @@ function vPath() {
     return '<div class="coursecard"><div class="coursecard-h">' +
       '<span class="ic">' + r.domain.icon + "</span><div style='flex:1;min-width:0'>" +
       '<div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-bottom:5px">' +
-      '<span class="pill ' + (i < 2 ? "pill-rose" : i < 4 ? "pill-amber" : "") + '">Priority ' + (i + 1) + "</span>" +
+      '<span class="pill prio' + (i < 2 ? "-1" : i < 4 ? "-2" : "-3") + '">Priority ' + (i + 1) + "</span>" +
       '<span class="pill">' + r.course.cpd + " CPD hrs</span>" +
       '<span class="pill">' + r.course.lessonCount + " lessons</span></div>" +
       "<h3>" + esc(r.course.title) + "</h3><p>" + esc(r.course.blurb) + "</p>" +

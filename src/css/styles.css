@@ -642,3 +642,11 @@ img, svg, canvas { max-width:100%; height:auto; }
 .price { display:flex; flex-direction:column; }
 .price ul { flex:1; }
 .price .btn { margin-top:auto; }
+
+/* Course priority is ordinal, so it steps down the same sequential red ramp
+   the gap report uses, rather than reintroducing the amber/red pair that
+   measured as indistinguishable under deuteranopia. The number is in the
+   label, so the colour is reinforcement and never the only signal. */
+.prio-1 { background:var(--red-fill); color:#fff; border-color:var(--red-fill); }
+.prio-2 { background:rgba(237,28,36,.13); color:var(--red-700); border-color:rgba(237,28,36,.3); }
+.prio-3 { background:var(--paper-3); color:var(--ink-3); border-color:var(--line); }
