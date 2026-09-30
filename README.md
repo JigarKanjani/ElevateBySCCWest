@@ -97,6 +97,45 @@ render the fine strokes more crisply at small sizes than the raster asset does.
    red and Bold weight but keep sentence case. Adding
    `h2 { text-transform: uppercase; }` switches to full compliance.
 
+## The flow
+
+One path, five steps, each named for what the person does rather than what the
+system does:
+
+| Step | They do | They get |
+|---|---|---|
+| 1 · Your goal | Pick one of six target jobs | The benchmark they are measured against |
+| 2 · Your resume | Upload a file or paste text | Parsed in-browser, never uploaded |
+| 3 · What we found | Review and correct | What the resume *claims*, clearly labelled as unverified |
+| 4 · The quiz | ~20 adaptive questions | Difficulty tracks their answers |
+| 5 · Your gaps | — | The report, then the lesson list that closes it |
+
+Progress is saved to `localStorage`, so the flow survives a closed tab.
+
+## The gap report
+
+The report is a **bullet chart**: one data series (the verified level) plus two
+reference marks (what the job needs, what the resume claimed). They are
+separated by *shape* as well as colour — a filled bar, an ink tick, a hollow
+dot — so the chart survives colourblindness, greyscale printing and forced-colors
+mode. Every row is directly labelled; nothing depends on reading a hue.
+
+Encoding decisions, made against the measured numbers rather than by eye:
+
+- **Gap size is ordinal**, so it uses a single-hue sequential red ramp
+  (verified monotonic in lightness), not a set of categorical hues.
+- **"At the level" is the one true status**, in green, and always ships with a
+  ✓ and the words — colour is never the only carrier.
+- An earlier amber/deep-red severity pair was **cut**: measured at ΔE 0.3 in
+  deuteranopia and 12.7 for normal vision, it was indistinguishable. The
+  sequential ramp replaced it.
+- The radar is styled from CSS custom properties, so it re-steps for dark mode
+  instead of keeping light-mode values, and its `aria-label` narrates the
+  actual per-domain figures.
+
+Alongside it, **Resume vs assessment** names the areas where the quiz disagreed
+with the resume, in both directions — the product's central claim, made legible.
+
 ## Responsive
 
 Spacing is fluid (`clamp()`) rather than fixed, so gutters, section rhythm and

@@ -216,7 +216,13 @@ button { font-family:inherit; }
 .step.done .dot { background:var(--red-fill); color:#fff; border-color:var(--red-fill); }
 .step.on { color:var(--heading); }
 .step-sep { flex:1; height:1px; background:var(--line); min-width:12px; }
-@media(max-width:760px){ .step span.lbl { display:none; } }
+/* On narrow screens the step names are dropped for room, but the step you
+   are ON keeps its label, so "where am I" is always answerable. */
+@media(max-width:760px){
+  .step span.lbl { display:none; }
+  .step.on span.lbl { display:inline; font-weight:700; }
+  .stepper { gap:4px; }
+}
 
 .track {
   text-align:left; background:var(--paper); border:1.5px solid var(--line); border-radius:var(--radius);
@@ -467,3 +473,172 @@ img, svg, canvas { max-width:100%; height:auto; }
 .foot-brand { display:flex; align-items:center; gap:12px; margin-bottom:10px; }
 .foot-brand img { width:44px; height:44px; flex:none; display:block; }
 .foot-brand b { color:#fff; font-size:1rem; }
+
+/* ==================================================================== *
+   Gap report
+   One series (your verified level) plus two reference marks (the role
+   benchmark, and what your resume claimed). That is a bullet chart, not
+   three competing series, so the marks differ in SHAPE as well as colour
+   and every row carries a direct label.
+ * ==================================================================== */
+
+/* --- summary tiles ------------------------------------------------- */
+.tiles { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:20px 0; }
+@media(max-width:860px){ .tiles { grid-template-columns:repeat(2,1fr); } }
+.tile {
+  background:var(--paper); border:1px solid var(--line); border-radius:var(--radius);
+  padding:16px 18px; box-shadow:var(--shadow-sm);
+}
+.tile .tl { font-size:.7rem; text-transform:uppercase; letter-spacing:.08em;
+  font-weight:700; color:var(--ink-3); }
+.tile .tv { font-size:clamp(1.5rem,4vw,1.9rem); font-weight:700; letter-spacing:-.03em;
+  color:var(--heading); line-height:1.15; margin-top:3px; }
+.tile .tn { font-size:.79rem; color:var(--ink-3); margin-top:2px; }
+.tile.ok .tv { color:var(--ok-500); }
+.tile.gap .tv { color:var(--red-500); }
+
+/* --- the 0-4 scale key --------------------------------------------- */
+.scalekey { display:flex; gap:6px; flex-wrap:wrap; margin:0 0 18px; }
+.scalekey span {
+  font-size:.71rem; font-weight:600; color:var(--ink-3);
+  border:1px solid var(--line); border-radius:99px; padding:3px 9px; background:var(--paper-2);
+}
+.scalekey b { color:var(--heading); font-weight:700; }
+
+/* --- one bullet row per domain -------------------------------------- */
+.bullet { padding:14px 0; border-bottom:1px solid var(--line); }
+.bullet:last-child { border-bottom:0; }
+.bullet-h { display:flex; align-items:center; gap:9px; margin-bottom:9px; flex-wrap:wrap; }
+.bullet-h .ic { font-size:1.1rem; flex:none; }
+.bullet-h .nm { font-weight:600; color:var(--heading); font-size:.94rem; flex:1; min-width:140px; }
+
+/* the measure track: 0 -> 4, with the benchmark shortfall shaded */
+.track-wrap { position:relative; height:26px; }
+.track-bg {
+  position:absolute; inset:6px 0; background:var(--paper-3);
+  border-radius:99px; overflow:hidden;
+}
+/* shortfall: the stretch between where you are and where the role needs you */
+.track-need {
+  position:absolute; top:6px; bottom:6px; border-radius:0 99px 99px 0;
+  background:repeating-linear-gradient(45deg,
+    rgba(237,28,36,.16), rgba(237,28,36,.16) 5px,
+    rgba(237,28,36,.06) 5px, rgba(237,28,36,.06) 10px);
+}
+/* your verified level - the one real data mark */
+.track-have {
+  position:absolute; top:6px; bottom:6px; left:0; border-radius:99px;
+  background:var(--red-fill);
+}
+.bullet.met .track-have { background:var(--ok-500); }
+/* the role benchmark - a reference tick, in ink not a competing hue */
+.track-mark {
+  position:absolute; top:1px; bottom:1px; width:3px; border-radius:2px;
+  background:var(--heading); box-shadow:0 0 0 2px var(--paper);
+}
+/* what the resume claimed - hollow, so shape alone separates it from the bar */
+.track-claim {
+  position:absolute; top:9px; width:10px; height:10px; margin-left:-5px;
+  border:2px solid var(--ink-3); border-radius:50%; background:var(--paper);
+}
+.bullet-f { display:flex; gap:10px; align-items:baseline; margin-top:7px; flex-wrap:wrap; }
+.bullet-note { font-size:.83rem; color:var(--ink-2); flex:1; min-width:180px; }
+
+/* status chip - colour is never alone, it always ships with mark + word */
+.chip {
+  display:inline-flex; align-items:center; gap:5px; font-size:.72rem; font-weight:700;
+  padding:3px 10px; border-radius:99px; white-space:nowrap;
+  border:1px solid transparent;
+}
+.chip-met  { background:rgba(21,121,75,.10); color:var(--ok-500); border-color:rgba(21,121,75,.3); }
+.chip-g1   { background:rgba(237,28,36,.08); color:var(--red-700); border-color:rgba(237,28,36,.22); }
+.chip-g2   { background:rgba(237,28,36,.14); color:var(--red-700); border-color:rgba(237,28,36,.34); }
+.chip-g3   { background:var(--red-fill); color:#fff; border-color:var(--red-fill); }
+.chip-untested { background:var(--paper-3); color:var(--ink-3); border-color:var(--line); }
+
+/* --- chart legend (explains the marks, not a series list) ----------- */
+.marks-key { display:flex; gap:16px; flex-wrap:wrap; margin-top:14px;
+  font-size:.78rem; color:var(--ink-2); }
+.marks-key i { display:inline-block; vertical-align:middle; margin-right:6px; }
+.mk-bar { width:16px; height:9px; border-radius:99px; background:var(--red-fill); }
+.mk-tick { width:3px; height:14px; border-radius:2px; background:var(--heading); }
+.mk-claim { width:10px; height:10px; border-radius:50%; border:2px solid var(--ink-3); background:var(--paper); }
+.mk-need { width:16px; height:9px; border-radius:99px;
+  background:repeating-linear-gradient(45deg,rgba(237,28,36,.18),rgba(237,28,36,.18) 4px,rgba(237,28,36,.06) 4px,rgba(237,28,36,.06) 8px); }
+
+/* --- resume vs assessment reality check ----------------------------- */
+.reality { display:grid; gap:10px; }
+.reality-row {
+  display:flex; align-items:center; gap:10px; padding:11px 14px;
+  border:1px solid var(--line); border-radius:11px; background:var(--paper-2); font-size:.87rem;
+}
+.reality-row .d { font-weight:600; color:var(--heading); flex:1; min-width:130px; }
+.delta { font-weight:700; font-size:.8rem; white-space:nowrap; }
+.delta.over  { color:var(--red-700); }
+.delta.under { color:var(--ok-500); }
+
+/* Radar marks. Styled here rather than baked into the SVG so the chart
+   re-steps for dark mode instead of keeping light-mode values. */
+.rx-ring  { stroke:var(--line); }
+.rx-spoke { stroke:var(--paper-3); }
+.rx-label { fill:var(--ink-3); font-family:var(--font); }
+.rx-bench { fill:rgba(169,163,161,.18); stroke:var(--ink-3); }
+.rx-you   { fill:rgba(237,28,36,.24); stroke:var(--red-500); }
+:root[data-theme="dark"] .rx-bench { fill:rgba(169,163,161,.14); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .rx-bench { fill:rgba(169,163,161,.14); }
+  :root:not([data-theme="light"]) .rx-you   { fill:rgba(255,82,87,.22); }
+}
+
+/* Neutral explainer. .notice wears the warning amber, which is wrong for
+   information that is not a warning. */
+.notice-info {
+  background:var(--paper-3); border-color:var(--line); color:var(--ink-2);
+}
+.notice-info b { color:var(--heading); }
+
+/* The resume-claim marker sits over hatching, so it needs a surface ring
+   to stay findable without becoming a competing filled mark. */
+.track-claim {
+  box-shadow:0 0 0 2px var(--paper);
+  border-color:var(--ink-2);
+}
+
+/* ------------------------- membership ------------------------------ */
+/* The free/paid split is the one thing people come to this page to learn,
+   so it gets its own block above the price cards rather than being
+   inferred by diffing three feature lists. */
+.freepaid { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+@media(max-width:640px){ .freepaid { grid-template-columns:1fr; gap:18px; } }
+.fp-h { font-size:.78rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em;
+  padding-bottom:8px; margin-bottom:10px; border-bottom:2px solid var(--line); }
+.fp-free { color:var(--ok-500); border-bottom-color:var(--ok-500); }
+.fp-paid { color:var(--red-600); border-bottom-color:var(--red-fill); }
+.fp-list { list-style:none; padding:0; margin:0; }
+.fp-list li { font-size:.89rem; color:var(--ink-2); padding:5px 0 5px 20px; position:relative; }
+.fp-list li:before { content:"·"; position:absolute; left:6px; color:var(--ink-3); font-weight:700; }
+
+/* --------------------------- FAQ ------------------------------------ */
+.faq { max-width:720px; margin:34px auto 0; }
+.faq-q {
+  border:1px solid var(--line); border-radius:11px; background:var(--paper);
+  margin-bottom:9px; overflow:hidden;
+}
+.faq-q summary {
+  cursor:pointer; padding:14px 17px; font-weight:600; font-size:.93rem;
+  color:var(--heading); list-style:none; display:flex; justify-content:space-between; gap:12px;
+}
+.faq-q summary::-webkit-details-marker { display:none; }
+.faq-q summary:after { content:"+"; color:var(--red-500); font-weight:700; flex:none; }
+.faq-q[open] summary:after { content:"−"; }
+.faq-q summary:hover { background:var(--paper-2); }
+.faq-q summary:focus-visible { outline:2px solid var(--red-500); outline-offset:-2px; }
+.faq-q p { margin:0; padding:0 17px 15px; font-size:.89rem; color:var(--ink-2); line-height:1.6; }
+@media (pointer:coarse) { .faq-q summary { min-height:48px; align-items:center; } }
+
+/* Price cards: unequal feature lists left the buttons floating at different
+   heights. Push the CTA to the bottom so the row reads as one band. */
+.pricegrid { align-items:stretch; }
+.price { display:flex; flex-direction:column; }
+.price ul { flex:1; }
+.price .btn { margin-top:auto; }

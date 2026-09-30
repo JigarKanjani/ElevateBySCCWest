@@ -82,7 +82,8 @@ function topbar() {
 }
 
 function stepper(active) {
-  var steps = [["Goal", "goal"], ["Resume", "upload"], ["Skills", "skills"], ["Assessment", "quiz"], ["Results", "results"]];
+  var steps = [["Your goal", "goal"], ["Your resume", "upload"], ["What we found", "skills"],
+               ["The quiz", "quiz"], ["Your gaps", "results"]];
   var out = '<div class="stepper">';
   steps.forEach(function (s, i) {
     var cls = i < active ? "done" : (i === active ? "on" : "");
@@ -110,36 +111,36 @@ function vHome() {
   return '<div class="hero"><div class="wrap">' +
     '<span class="eyebrow">Supply Chain Canada West · Alberta &amp; BC</span>' +
     '<h1>Know exactly where you stand. <span class="accent">Then close the gap.</span></h1>' +
-    '<p class="lede">Elevate measures your supply chain competencies against the role you actually want, ' +
-    'verifies what your resume claims, and builds a learning path from the gap. Built on the competency ' +
-    'framework behind the profession in Canada.</p>' +
-    '<a class="btn btn-accent btn-lg" onclick="go(\'goal\')">Start my assessment</a> ' +
+    '<p class="lede">Tell us the job you want. Add your resume. Answer some questions. ' +
+    'In about fifteen minutes you get a clear picture of what you are already good at, ' +
+    'what is missing for that job, and exactly which lessons close the difference.</p>' +
+    '<a class="btn btn-accent btn-lg" onclick="go(\'goal\')">Start — it is free</a> ' +
     '<a class="btn btn-ghost btn-lg" style="color:#fff;border-color:rgba(255,255,255,.4)" onclick="go(\'pricing\')">See membership</a>' +
     '<div class="hero-stats">' +
-      '<div class="hero-stat"><div class="n">10</div><div class="l">Competency domains</div></div>' +
-      '<div class="hero-stat"><div class="n">6</div><div class="l">Career tracks</div></div>' +
-      '<div class="hero-stat"><div class="n">' + TOTAL_LESSONS + '</div><div class="l">Micro-lessons</div></div>' +
-      '<div class="hero-stat"><div class="n">' + totalQ + '</div><div class="l">Assessment items</div></div>' +
+      '<div class="hero-stat"><div class="n">10</div><div class="l">Skill areas</div></div>' +
+      '<div class="hero-stat"><div class="n">6</div><div class="l">Jobs to aim for</div></div>' +
+      '<div class="hero-stat"><div class="n">' + TOTAL_LESSONS + '</div><div class="l">Lessons</div></div>' +
+      '<div class="hero-stat"><div class="n">' + totalQ + '</div><div class="l">Quiz questions</div></div>' +
     "</div></div></div>" +
 
     '<div class="section"><div class="wrap">' +
     '<h2 class="center">How it works</h2>' +
-    '<p class="center muted" style="max-width:56ch;margin:0 auto 32px">Four steps, about fifteen minutes. ' +
-    'The output is a gap report you can act on, not a score you file away.</p>' +
+    '<p class="center muted" style="max-width:58ch;margin:0 auto 32px">Four steps, about fifteen minutes. ' +
+    'You end up with a report you can act on, not a score you file away. Nothing to pay to find out.</p>' +
     '<div class="grid g2">' +
-      card("1 · Choose your goal", "Pick the role you are working toward. Every track carries its own competency benchmark, so the bar you are measured against is the one that matters to you.") +
-      card("2 · Upload your resume", "Elevate parses your experience, maps it to ten competency domains, and shows you the evidence it found for each. You can correct anything it misread.") +
-      card("3 · Prove it", "An adaptive assessment tests what your resume claims. Difficulty rises when you answer well and falls when you do not, so it finds your real level quickly.") +
-      card("4 · Get your path", "Your verified level is compared to the benchmark. The gap generates a sequenced learning path with CPD hours attached.") +
+      card("Step 1 · Pick the job you want", "Choose one of six career tracks. Each job needs different things, so this sets the bar you are measured against. Takes a few seconds.") +
+      card("Step 2 · Add your resume", "Upload a file or paste the text. We read it and show you what we found for each of the ten skill areas, so you can correct anything we got wrong. Your resume stays in your browser.") +
+      card("Step 3 · Answer the questions", "A short quiz checks what your resume claims. It gets harder when you do well and easier when you do not, so it finds your real level in about twenty questions.") +
+      card("Step 4 · See your gaps and what fixes them", "You get a score for every skill area, side by side with what the job needs. Wherever there is a gap, we list the exact lessons that close it.") +
     "</div></div></div>" +
 
     '<div class="section" style="background:var(--paper)"><div class="wrap">' +
     '<div class="grid g2" style="align-items:center;gap:40px">' +
-      "<div><h2>Your resume says. The assessment knows.</h2>" +
-      "<p>Most skills platforms read a resume and take it at face value. Elevate treats it as a claim to be tested. " +
-      "You get two numbers for every competency: what your experience suggests, and what you demonstrated.</p>" +
-      "<p>The gap between them is the most useful thing in the whole report, and it is what makes the learning " +
-      "path worth following rather than generic.</p></div>" +
+      "<div><h2>A resume is a claim. We check it.</h2>" +
+      "<p>Most tools read your resume and believe it. We do not. For every skill area you get two numbers: " +
+      "what your resume suggests, and what you actually showed in the quiz.</p>" +
+      "<p>Where those two disagree is the most useful thing in the report. It is also why your lesson list " +
+      "is specific to you instead of the same list everyone else gets.</p></div>" +
       '<div class="card card-pad">' +
         '<div class="skillrow"><span class="ic">\u{1F4D1}</span><div class="nm"><b>Contract Management</b>' +
         '<small>Resume evidence: strong</small></div><div class="bar"><i style="width:92%"></i></div></div>' +
@@ -151,9 +152,10 @@ function vHome() {
     "</div></div></div>" +
 
     '<div class="section"><div class="wrap center">' +
-    "<h2>Ten domains built for Canadian supply chain</h2>" +
-    '<p class="muted" style="max-width:58ch;margin:0 auto 26px">Including public procurement under CFTA and NWPTA, ' +
-    "CUSMA rules of origin, and Bill S-211 forced labour reporting. Content no global platform covers.</p>" +
+    "<h2>The ten skill areas we measure</h2>" +
+    '<p class="muted" style="max-width:60ch;margin:0 auto 26px">Every area is scored on the same five-point scale, ' +
+    "from no evidence up to leading the work. Built for Canada: public procurement under CFTA and NWPTA, " +
+    "CUSMA rules of origin, and Bill S-211 forced labour reporting.</p>" +
     '<div class="grid g3" style="text-align:left">' +
     DOMAINS.map(function (d) {
       return '<div class="card card-pad"><div style="font-size:1.5rem;margin-bottom:6px">' + d.icon + "</div>" +
@@ -161,7 +163,7 @@ function vHome() {
         '<p class="muted" style="margin:0">' + esc(d.blurb) + "</p></div>";
     }).join("") +
     "</div>" +
-    '<div style="margin-top:34px"><a class="btn btn-accent btn-lg" onclick="go(\'goal\')">Start my assessment</a></div>' +
+    '<div style="margin-top:34px"><a class="btn btn-accent btn-lg" onclick="go(\'goal\')">Start — it is free</a></div>' +
     "</div></div>";
 }
 function card(t, b) {
@@ -170,9 +172,10 @@ function card(t, b) {
 
 function vGoal() {
   return '<div class="section"><div class="wrap">' + stepper(0) +
-    "<h2>What are you working toward?</h2>" +
-    '<p class="muted" style="max-width:58ch">Each track carries a different competency benchmark. ' +
-    'Pick the role you want next, not the one you hold now.</p>' +
+    "<h2>Which job are you aiming for?</h2>" +
+    '<p class="muted" style="max-width:60ch">Pick the role you want <b>next</b>, not the one you hold now. ' +
+    'Each one needs a different mix of skills, and that is what we measure you against. ' +
+    'You can change this later and run it again.</p>' +
     '<div class="grid g2" style="margin-top:22px">' +
     TRACKS.map(function (t) {
       return '<button class="track ' + (S.track === t.id ? "sel" : "") + '" onclick="pickTrack(\'' + t.id + '\')">' +
@@ -183,7 +186,9 @@ function vGoal() {
     }).join("") + "</div>" +
     '<div style="margin-top:26px">' +
     '<button class="btn btn-accent btn-lg" ' + (S.track ? "" : "disabled") +
-    ' onclick="go(\'upload\')">Continue</button></div>' +
+    ' onclick="go(\'upload\')">Next: add your resume</button>' +
+    (S.track ? '' : '<p class="muted" style="margin:10px 0 0;font-size:.85rem">Pick a job above to continue.</p>') +
+    '</div>' +
     "</div></div>";
 }
 function pickTrack(id) { S.track = id; save(); render(); }
@@ -192,19 +197,21 @@ function vUpload() {
   var t = TRACK_BY_ID[S.track];
   return '<div class="section"><div class="wrap-narrow">' + stepper(1) +
     "<h2>Add your resume</h2>" +
-    '<p class="muted">Targeting <b>' + esc(t.name) + '</b>. Your resume is parsed in your browser and never leaves this device.</p>' +
+    '<p class="muted" style="max-width:60ch">We read it to see which of the ten skill areas you already have ' +
+    'evidence for. You are being measured against <b>' + esc(t.name) + '</b>.<br>' +
+    '<b>Your resume never leaves your browser.</b> Nothing is uploaded to a server.</p>' +
     '<div class="drop" id="drop" onclick="document.getElementById(\'file\').click()">' +
-      '<div class="ic">\u{1F4C4}</div><b>Drop a file or click to browse</b>' +
-      '<div class="muted" style="margin-top:5px">PDF, Word (.docx) or plain text</div>' +
+      '<div class="ic">\u{1F4C4}</div><b>Drop your resume here, or click to pick a file</b>' +
+      '<div class="muted" style="margin-top:5px">PDF, Word (.docx) or a plain text file</div>' +
       '<input type="file" id="file" class="hidden" accept=".pdf,.docx,.txt,.md" onchange="onFile(event)">' +
     "</div>" +
     '<div id="filestatus" style="margin-top:12px"></div>' +
     '<div class="divider"></div>' +
-    '<label class="muted" style="display:block;margin-bottom:7px;font-weight:600">Or paste the text</label>' +
+    '<label class="muted" style="display:block;margin-bottom:7px;font-weight:600">Or just paste the text instead</label>' +
     '<textarea class="resume" id="rtext" placeholder="Paste your resume text here…">' + esc(S.resumeText) + "</textarea>" +
     '<div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">' +
       '<button class="btn btn-accent" onclick="doParse()">Analyze my resume</button>' +
-      '<button class="btn btn-ghost" onclick="useSample()">Use a sample resume</button>' +
+      '<button class="btn btn-ghost" onclick="useSample()">Try it with a sample resume</button>' +
     "</div></div></div>";
 }
 
@@ -256,8 +263,9 @@ function vSkills() {
   }).join("");
 
   return '<div class="section"><div class="wrap-narrow">' + stepper(2) +
-    "<h2>What your resume claims</h2>" +
-    '<p class="muted">This is evidence found in your text, not a verified level. The assessment tests it next.</p>' +
+    "<h2>Here is what we found</h2>" +
+    '<p class="muted" style="max-width:62ch">This is only what your <b>resume</b> says — we have not checked it yet. ' +
+    'The quiz does that next, and your real score can come out higher or lower than this.</p>' +
     '<div class="grid g3" style="margin:20px 0">' +
       mini("Experience", p.years ? p.years + " yrs" : "—") +
       mini("Seniority signal", p.seniorityLabel) +
@@ -266,11 +274,15 @@ function vSkills() {
     (p.credentials.length ? '<div style="margin-bottom:16px">' + p.credentials.map(function (c) {
       return '<span class="pill pill-navy" style="margin-right:6px">' + esc(c) + "</span>"; }).join("") + "</div>" : "") +
     '<div class="card card-pad">' + rows + "</div>" +
-    '<div class="notice" style="margin-top:18px"><b>Anything look wrong?</b> ' +
-    'Resume parsing reads what is written, so a skill you have but never described will show as missing. ' +
-    'You can <a href="#" onclick="go(\'upload\');return false">go back and edit your text</a>, or let the assessment sort it out.</div>' +
+    '<div class="notice notice-info" style="margin-top:18px"><b>Something missing?</b> ' +
+    'We can only read what you actually wrote down. If you can do something but never mentioned it, ' +
+    'it will show as missing here. Either ' +
+    '<a href="#" onclick="go(\'upload\');return false">go back and add it</a>, ' +
+    'or carry on — the quiz will pick it up anyway.</div>' +
     '<div style="margin-top:22px"><button class="btn btn-accent btn-lg" onclick="startQuiz()">' +
-    "Start the assessment</button></div></div></div>";
+    'Next: take the quiz</button>' +
+    '<p class="muted" style="margin:10px 0 0;font-size:.85rem">About 20 questions, roughly 10 minutes. ' +
+    'You can stop and come back — your progress is saved on this device.</p></div></div></div>';
 }
 function mini(l, v) {
   return '<div class="card card-pad" style="padding:16px 18px"><div class="muted" style="font-size:.74rem;' +
@@ -297,8 +309,8 @@ function vQuiz() {
   var opts = q.opts.map(function (o, i) {
     var cls = "opt", tag = "";
     if (st.answered) {
-      if (i === q.a) { cls += " right"; tag = '<span class="tag" style="color:var(--teal-600)">Correct</span>'; }
-      else if (i === st.choice) { cls += " wrong"; tag = '<span class="tag" style="color:var(--rose-500)">Your answer</span>'; }
+      if (i === q.a) { cls += " right"; tag = '<span class="tag" >Correct</span>'; }
+      else if (i === st.choice) { cls += " wrong"; tag = '<span class="tag" >Your answer</span>'; }
     }
     return '<button class="' + cls + '" ' + (st.answered ? "disabled" : 'onclick="answer(' + i + ')"') + ">" +
       tag + esc(o) + "</button>";
@@ -337,72 +349,202 @@ function nextQ() {
 }
 
 /* ---------------- results ---------------- */
+
+/* Plain-language meaning for each 0-4 level, so a number is never shown bare. */
+var LEVEL_MEANING = [
+  "No evidence yet",
+  "You know the basics",
+  "You can do it with support",
+  "You work independently",
+  "You lead and set the standard"
+];
+
+function levelName(n) { return LEVELS[n].short; }
+
+/* One bullet row: your level (bar), the role benchmark (tick),
+   what your resume claimed (hollow dot), and the shortfall (hatched). */
+function bulletRow(d, r) {
+  var max = 4;
+  var pctHave = (r.level / max) * 100;
+  var pctBench = (r.benchmark / max) * 100;
+  var pctClaim = (r.claimed / max) * 100;
+  var met = r.gap === 0;
+
+  var chip, chipCls;
+  if (r.tested === 0 && r.benchmark > 0) { chipCls = "chip-untested"; chip = "— Not tested"; }
+  else if (met) { chipCls = "chip-met"; chip = "✓ At the level"; }
+  else if (r.gap === 1) { chipCls = "chip-g1"; chip = "▲ 1 level short"; }
+  else if (r.gap === 2) { chipCls = "chip-g2"; chip = "▲▲ 2 levels short"; }
+  else { chipCls = "chip-g3"; chip = "▲▲▲ " + r.gap + " levels short"; }
+
+  var note;
+  if (met) {
+    note = "You are at <b>" + levelName(r.level) + "</b>, which is what this role asks for.";
+  } else if (r.level === 0) {
+    note = "Nothing in your resume or your answers showed this yet. This role needs <b>" +
+           levelName(r.benchmark) + "</b>.";
+  } else {
+    note = "You are at <b>" + levelName(r.level) + "</b>. This role needs <b>" +
+           levelName(r.benchmark) + "</b>.";
+  }
+  if (r.tested === 0 && r.benchmark > 0) {
+    note += " We did not test this one, so it is capped until you do.";
+  }
+
+  var shortfall = "";
+  if (!met) {
+    shortfall = '<div class="track-need" style="left:' + pctHave + '%;width:' +
+      (pctBench - pctHave) + '%"></div>';
+  }
+
+  var title = d.name + " — you: " + levelName(r.level) +
+    ", role needs: " + levelName(r.benchmark) +
+    ", your resume suggested: " + levelName(r.claimed);
+
+  return '<div class="bullet ' + (met ? "met" : "") + '" title="' + esc(title) + '">' +
+    '<div class="bullet-h"><span class="ic">' + d.icon + '</span>' +
+    '<span class="nm">' + esc(d.name) + '</span>' +
+    '<span class="chip ' + chipCls + '">' + esc(chip) + '</span></div>' +
+    '<div class="track-wrap">' +
+      '<div class="track-bg"></div>' + shortfall +
+      '<div class="track-have" style="width:' + pctHave + '%"></div>' +
+      '<div class="track-claim" style="left:' + pctClaim + '%"></div>' +
+      '<div class="track-mark" style="left:' + pctBench + '%"></div>' +
+    '</div>' +
+    '<div class="bullet-f"><span class="bullet-note">' + note + '</span></div>' +
+    '</div>';
+}
+
 function vResults() {
   var sc = S.score;
   if (!sc) return vGoal();
   var t = TRACK_BY_ID[sc.trackId];
   var path = buildPath(sc);
 
-  var gapRows = DOMAINS.filter(function (d) { return sc.domains[d.id].benchmark > 0; })
-    .sort(function (a, b) { return sc.domains[b.id].gap - sc.domains[a.id].gap ||
-                                   sc.domains[b.id].benchmark - sc.domains[a.id].benchmark; })
-    .map(function (d) {
-      var r = sc.domains[d.id];
-      var bars = "";
-      for (var i = 1; i <= 4; i++) {
-        var cls = i <= r.level ? "has" : (i <= r.benchmark ? "need" : "");
-        bars += '<i class="' + cls + '"></i>';
-      }
-      var note;
-      if (r.gap === 0) note = "At the level this role requires.";
-      else note = "Needs " + r.gap + " level" + (r.gap > 1 ? "s" : "") + " to reach " + LEVELS[r.benchmark].short + ".";
-      var verify = "";
-      if (r.tested > 0 && r.demonstrated !== null) {
-        if (r.demonstrated < r.claimed - 1) verify = " Resume suggested " + LEVELS[r.claimed].short +
-          ", assessment showed " + LEVELS[r.demonstrated].short + ".";
-        else if (r.demonstrated > r.claimed) verify = " You scored above what your resume showed.";
-      } else if (r.tested === 0) {
-        verify = " Not directly tested, so this is capped until assessed.";
-      }
-      return '<div class="gaprow"><div class="gaphead"><span class="ic">' + d.icon + "</span>" +
-        "<b>" + esc(d.name) + "</b>" +
-        '<span class="pill ' + (r.gap === 0 ? "pill-teal" : r.gap >= 2 ? "pill-rose" : "pill-amber") + '">' +
-        LEVELS[r.level].short + " / " + LEVELS[r.benchmark].short + "</span></div>" +
-        '<div class="levelbar">' + bars + "</div>" +
-        '<div class="levelnote">' + esc(note + verify) + "</div></div>";
-    }).join("");
+  var scored = DOMAINS.filter(function (d) { return sc.domains[d.id].benchmark > 0; });
+  var met = scored.filter(function (d) { return sc.domains[d.id].gap === 0; });
+  var short = scored.filter(function (d) { return sc.domains[d.id].gap > 0; });
+  var sorted = scored.slice().sort(function (a, b) {
+    return sc.domains[b.id].gap - sc.domains[a.id].gap ||
+           sc.domains[b.id].benchmark - sc.domains[a.id].benchmark;
+  });
+  var biggest = short.length ? sorted[0] : null;
+
+  /* What the assessment changed about the resume's story. */
+  var moved = scored.filter(function (d) {
+    var r = sc.domains[d.id];
+    return r.demonstrated !== null && r.tested > 0 && Math.abs(r.demonstrated - r.claimed) >= 1;
+  }).sort(function (a, b) {
+    return Math.abs(sc.domains[b.id].demonstrated - sc.domains[b.id].claimed) -
+           Math.abs(sc.domains[a.id].demonstrated - sc.domains[a.id].claimed);
+  });
+
+  var hrs = Math.max(1, Math.round(path.minutes / 60));
+
+  var plain = met.length === scored.length
+    ? "You are already at the level this job needs in every skill area."
+    : "You are at the level this job needs in " + met.length + " of " + scored.length +
+      " skill areas. " + short.length + " still " + (short.length === 1 ? "needs" : "need") + " work.";
 
   return '<div class="section"><div class="wrap">' + stepper(4) +
+
+    /* ---- headline ---- */
     '<div class="scorehero fadein">' +
-      '<div class="cap">Role readiness · ' + esc(t.name) + "</div>" +
-      '<div class="big">' + sc.readiness + "%</div>" +
-      "<h2>" + esc(sc.band) + "</h2>" +
-      '<p style="color:var(--on-dark-2);margin:0">You answered ' + sc.correct + " of " + sc.total +
-      " assessment items correctly across " + DOMAINS.length + " competency domains.</p>" +
-    "</div>" +
+      '<div class="cap">' + esc(t.name) + '</div>' +
+      '<div class="big">' + sc.readiness + '%</div>' +
+      '<h2>' + esc(sc.band) + '</h2>' +
+      '<p style="color:var(--on-dark-2);margin:0;max-width:46ch;margin-inline:auto">' +
+      'This is how close you are to what this job needs, across the ' +
+      scored.length + ' skill areas it is measured on.</p>' +
+    '</div>' +
 
-    '<div class="grid g2" style="align-items:start">' +
-      '<div class="card card-pad"><h3>Your profile against the benchmark</h3>' +
-      '<div class="radar-wrap">' + radarSVG(sc, 330) + "</div>" +
-      '<div class="center muted" style="font-size:.8rem">' +
-      '<span style="color:var(--teal-600);font-weight:700">■</span> Your verified level &nbsp; ' +
-      '<span style="color:var(--amber-500);font-weight:700">▨</span> Role benchmark</div></div>' +
+    /* ---- the four numbers that matter ---- */
+    '<div class="tiles">' +
+      '<div class="tile ok"><div class="tl">At the level</div><div class="tv">' + met.length +
+        ' <span style="font-size:.9rem;color:var(--ink-3);font-weight:600">of ' + scored.length + '</span></div>' +
+        '<div class="tn">Ready for this role</div></div>' +
+      '<div class="tile gap"><div class="tl">Needs work</div><div class="tv">' + short.length + '</div>' +
+        '<div class="tn">' + (short.length ? 'Covered by your learning path' : 'Nothing outstanding') + '</div></div>' +
+      '<div class="tile"><div class="tl">Biggest gap</div><div class="tv" style="font-size:1.02rem;line-height:1.3">' +
+        (biggest ? esc(biggest.name) : '—') + '</div>' +
+        '<div class="tn">' + (biggest ? sc.domains[biggest.id].gap + ' levels to close' : 'None') + '</div></div>' +
+      '<div class="tile"><div class="tl">Study time</div><div class="tv">' + hrs + 'h</div>' +
+        '<div class="tn">' + path.cpd + ' CPD hours</div></div>' +
+    '</div>' +
 
-      '<div class="card card-pad"><h3>Where the gaps are</h3>' + gapRows + "</div>" +
-    "</div>" +
+    '<div class="notice notice-info" style="margin-bottom:22px"><b>What this means.</b> ' + esc(plain) +
+    ' Your answers were compared with what this job needs, not with other people.</div>' +
 
+    /* ---- the gap chart ---- */
+    '<div class="card card-pad">' +
+      '<h3 style="margin-bottom:4px">Where you stand, skill area by skill area</h3>' +
+      '<p class="muted" style="font-size:.87rem">Ordered by how much work each one needs. ' +
+      'Every skill area is rated on the same five-point scale.</p>' +
+      '<div class="scalekey">' +
+        LEVELS.map(function (l, i) {
+          return '<span><b>' + i + '</b> ' + esc(l.short) + '</span>';
+        }).join('') +
+      '</div>' +
+      sorted.map(function (d) { return bulletRow(d, sc.domains[d.id]); }).join('') +
+      '<div class="marks-key">' +
+        '<span><i class="mk-bar"></i>Your verified level</span>' +
+        '<span><i class="mk-tick"></i>What this role needs</span>' +
+        '<span><i class="mk-claim"></i>What your resume suggested</span>' +
+        '<span><i class="mk-need"></i>The gap to close</span>' +
+      '</div>' +
+    '</div>' +
+
+    /* ---- shape at a glance + the honesty check ---- */
+    '<div class="grid g2" style="align-items:start;margin-top:20px">' +
+      '<div class="card card-pad"><h3>Your profile at a glance</h3>' +
+      '<p class="muted" style="font-size:.86rem">The further the shape reaches, the stronger you are. ' +
+      'Where the solid shape sits inside the dashed outline, there is a gap.</p>' +
+      '<div class="radar-wrap">' + radarSVG(sc, 330) + '</div>' +
+      '<div class="marks-key" style="justify-content:center">' +
+        '<span><i class="mk-bar"></i>You</span>' +
+        '<span><i class="mk-need"></i>This role needs</span></div></div>' +
+
+      '<div class="card card-pad"><h3>Resume vs assessment</h3>' +
+      '<p class="muted" style="font-size:.86rem">A resume is a claim. The assessment is the check. ' +
+      'Here is where the two disagreed.</p>' +
+      (moved.length
+        ? '<div class="reality">' + moved.slice(0, 6).map(function (d) {
+            var r = sc.domains[d.id];
+            var diff = r.demonstrated - r.claimed;
+            var over = diff < 0;
+            return '<div class="reality-row"><span class="d">' + d.icon + ' ' + esc(d.name) + '</span>' +
+              '<span class="muted" style="font-size:.79rem">Resume: ' + levelName(r.claimed) +
+              ' → Tested: ' + levelName(r.demonstrated) + '</span>' +
+              '<span class="delta ' + (over ? 'over' : 'under') + '">' +
+              (over ? '▼ ' + Math.abs(diff) + ' lower' : '▲ ' + diff + ' higher') + '</span></div>';
+          }).join('') + '</div>' +
+          '<p class="muted" style="font-size:.82rem;margin:12px 0 0">' +
+          'Lower means the assessment did not back up what the resume implied. ' +
+          'Higher means you know more than your resume says — worth rewriting.</p>'
+        : '<div class="notice">Your assessment results lined up with what your resume claimed ' +
+          'in every area. That is a good sign: the document represents you accurately.</div>') +
+      '</div>' +
+    '</div>' +
+
+    /* ---- what happens next ---- */
     '<div class="card card-pad" style="margin-top:20px">' +
-      "<h3>Your recommended path</h3>" +
-      '<p class="muted">Based on your gaps, Elevate has sequenced <b>' + path.recs.length +
-      " courses</b> containing <b>" + path.lessons + " lessons</b> (about " +
-      Math.round(path.minutes / 60) + " hours) worth <b>" + path.cpd + " CPD hours</b>.</p>" +
-      '<button class="btn btn-accent btn-lg" onclick="go(\'path\')">Open my learning path</button> ' +
+      '<h3>What to do next</h3>' +
+      (path.recs.length
+        ? '<p class="muted">We picked <b>' + path.recs.length + ' courses</b> that close the gaps above, ' +
+          'in the order that gets you to the benchmark fastest. That is <b>' + path.lessons +
+          ' lessons</b>, roughly <b>' + hrs + ' hours</b>, worth <b>' + path.cpd + ' CPD hours</b>.</p>'
+        : '<p class="muted">You have no outstanding gaps for this role. Browse the full catalogue ' +
+          'to go deeper, or reassess against a more senior track.</p>') +
+      '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">' +
+      '<button class="btn btn-accent btn-lg" onclick="go(\'path\')">' +
+      (path.recs.length ? 'Show me my learning path' : 'Browse the catalogue') + '</button>' +
       (S.confirmReset
         ? '<span class="confirmbar">Clear your assessment, scores and lesson progress? ' +
-          '<button class="btn btn-sm" style="background:var(--rose-500)" onclick="resetAll()">Yes, clear it</button> ' +
+          '<button class="btn btn-sm" style="background:var(--err-500)" onclick="resetAll()">Yes, clear it</button> ' +
           '<button class="btn btn-ghost btn-sm" onclick="cancelReset()">Cancel</button></span>'
         : '<button class="btn btn-ghost" onclick="askReset()">Start over</button>') +
-    "</div></div></div>";
+      '</div>' +
+    '</div></div></div>';
 }
 
 /* ---------------- learning path ---------------- */
@@ -517,8 +659,8 @@ function vLesson() {
     var opts = q.opts.map(function (o, i) {
       var cls = "opt", tag = "";
       if (st && st.answered) {
-        if (i === q.a) { cls += " right"; tag = '<span class="tag" style="color:var(--teal-600)">Correct</span>'; }
-        else if (i === st.choice) { cls += " wrong"; tag = '<span class="tag" style="color:var(--rose-500)">Your answer</span>'; }
+        if (i === q.a) { cls += " right"; tag = '<span class="tag" >Correct</span>'; }
+        else if (i === st.choice) { cls += " wrong"; tag = '<span class="tag" >Your answer</span>'; }
       }
       return '<button class="' + cls + '" ' + (st && st.answered ? "disabled" : 'onclick="lessonAnswer(' + i + ')"') +
         ">" + tag + esc(o) + "</button>";
@@ -579,21 +721,83 @@ function completeLesson(uid, idx) {
 /* ---------------- pricing ---------------- */
 function vPricing() {
   return '<div class="section"><div class="wrap">' +
-    '<div class="center" style="margin-bottom:34px">' +
-    "<h2>Membership</h2>" +
-    '<p class="muted" style="max-width:52ch;margin:0 auto">Assessment is free for everyone. ' +
-    "The learning path is a member benefit.</p></div>" +
+    '<div class="center" style="margin-bottom:10px">' +
+    '<h2>Membership</h2>' +
+    '<p class="muted" style="max-width:56ch;margin:0 auto">' +
+    'Finding out where you stand costs nothing. You only pay if you want the lessons ' +
+    'that close the gaps.</p></div>' +
+
+    /* the one thing people actually want to know, said once, plainly */
+    '<div class="card card-pad" style="max-width:720px;margin:0 auto 30px">' +
+      '<div class="freepaid">' +
+        '<div><div class="fp-h fp-free">✓ Free, no account needed</div><ul class="fp-list">' +
+          '<li>Pick your target job</li>' +
+          '<li>Resume read and scored</li>' +
+          '<li>The full quiz</li>' +
+          '<li>Your complete gap report</li>' +
+          '<li>The list of lessons that would close each gap</li>' +
+          '<li>The first lesson of every course</li>' +
+        '</ul></div>' +
+        '<div><div class="fp-h fp-paid">Members only</div><ul class="fp-list">' +
+          '<li>Every lesson, start to finish</li>' +
+          '<li>Checkpoint quizzes and course certificates</li>' +
+          '<li>CPD hours logged for you</li>' +
+          '<li>Reassess each quarter to see movement</li>' +
+        '</ul></div>' +
+      '</div>' +
+      '<p class="muted" style="margin:16px 0 0;font-size:.86rem">' +
+      'In short: the diagnosis is free and always will be. Membership is for the treatment.</p>' +
+    '</div>' +
+
     '<div class="pricegrid">' +
-      price("Free", "$0", "", ["Full competency assessment","Verified gap report","Recommended learning path","First lesson of every course"], "Start assessment", "go('goal')", false) +
-      price("Member", "$29", "per month, billed monthly", ["Everything in Free","All " + TOTAL_LESSONS + " lessons across " + COURSES.length + " courses","Checkpoint quizzes and course certificates","CPD hours logged automatically","Reassess quarterly to track progress"], "Choose monthly", "demoNote()", true) +
-      price("Member Annual", "$290", "per year · two months free", ["Everything in Member","Priority access to new courses","Downloadable CPD transcript","Member rate on SCC West workshops"], "Choose annual", "demoNote()", false) +
-    "</div>" +
-    '<div class="notice" style="margin-top:28px">' +
-    "<b>Pricing note for the business case.</b> At $29 per month, 200 subscribers is roughly $70K in annual " +
-    "recurring revenue against an estimated $8K in run costs. Existing SCC West members could receive a " +
-    "discounted or bundled rate, making this a retention tool as much as a revenue line.</div>" +
-    "</div></div>";
+      price("Free", "$0", "forever",
+        ["Everything in the assessment",
+         "Your full gap report",
+         "Your recommended lesson list",
+         "First lesson of every course"],
+        "Start the assessment", "go('goal')", false) +
+      price("Monthly", "$29", "per month, cancel anytime",
+        ["Everything in Free",
+         "All " + TOTAL_LESSONS + " lessons across " + COURSES.length + " courses",
+         "Checkpoint quizzes and certificates",
+         "CPD hours logged automatically",
+         "Reassess quarterly"],
+        "Choose monthly", "demoNote()", true) +
+      price("Yearly", "$290", "per year — two months free",
+        ["Everything in Monthly",
+         "Early access to new courses",
+         "Downloadable CPD transcript",
+         "Member rate on SCC West workshops"],
+        "Choose yearly", "demoNote()", false) +
+    '</div>' +
+
+    '<div class="faq">' +
+      '<h3 style="margin-bottom:12px">Questions people ask</h3>' +
+      faqItem("Do I have to pay to find out where I stand?",
+        "No. The assessment, the gap report and the list of lessons you would need are all free. " +
+        "You only pay if you want to take the lessons.") +
+      faqItem("Do I need an account?",
+        "Not for the assessment. Everything is saved in your own browser on this device. " +
+        "You would create an account only when you subscribe.") +
+      faqItem("What happens to my resume?",
+        "It is read in your browser and never sent to a server. Close the tab and it is gone.") +
+      faqItem("How long does the whole thing take?",
+        "About fifteen minutes: a few seconds to pick a job, a minute for your resume, " +
+        "and roughly ten minutes for the quiz.") +
+      faqItem("Is this the SCMP designation?",
+        "No. This is a self-assessment and development tool. It is not a credential and it is " +
+        "not part of the SCMP designation process.") +
+      faqItem("Can I do it again later?",
+        "Yes. Reassess any time to see whether the lessons moved your levels, or run it against " +
+        "a more senior job to see what that would take.") +
+    '</div>' +
+    '</div></div>';
 }
+
+function faqItem(q, a) {
+  return '<details class="faq-q"><summary>' + esc(q) + '</summary><p>' + esc(a) + '</p></details>';
+}
+
 function price(name, amt, per, feats, cta, action, feat) {
   return '<div class="price ' + (feat ? "feat" : "") + '">' +
     (feat ? '<span class="pill pill-teal" style="margin-bottom:10px">Most popular</span><br>' : "") +
@@ -602,8 +806,9 @@ function price(name, amt, per, feats, cta, action, feat) {
     '<button class="btn ' + (feat ? "btn-accent" : "btn-ghost") + '" style="width:100%" onclick="' + action + '">' +
     esc(cta) + "</button></div>";
 }
+
 function demoNote() {
-  toast("Prototype: payment is not connected. In production this would go to Stripe Checkout, linked to the member's SCC West record.");
+  toast("This is a prototype, so payment is not connected yet. In the live version this would open Stripe Checkout and link to your Supply Chain Canada West member record.");
 }
 
 /* ---------------- render ---------------- */
