@@ -9,9 +9,13 @@
 <meta property="og:description" content="Know exactly where you stand. Then close the gap.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230B2545'/><text y='72' x='50' text-anchor='middle' font-size='62' font-family='Inter,sans-serif' font-weight='800' fill='%2317CCB1'>E</text></svg>">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/logo-mark-192.png">
+<link rel="apple-touch-icon" href="assets/logo-mark-192.png">
+<meta name="theme-color" content="#ED1C24">
+<meta property="og:image" content="assets/logo-mark-512.png">
 </head>
 <body>
 <div id="app"></div>
@@ -24,11 +28,11 @@
 window.__elevateReady = (typeof COURSES !== "undefined" && typeof QUESTIONS !== "undefined" && typeof DOMAINS !== "undefined");
 if (!window.__elevateReady) {
   document.getElementById("app").innerHTML =
-    '<div style="font-family:system-ui,sans-serif;max-width:620px;margin:90px auto;padding:0 20px;color:#0E1A26">' +
+    '<div style="font-family:&quot;Source Sans 3&quot;,system-ui,sans-serif;max-width:620px;margin:90px auto;padding:0 20px;color:#141416">' +
     '<h1 style="font-size:1.45rem;margin:0 0 12px">Content did not load</h1>' +
     '<p style="line-height:1.6">Part of the lesson library could not be reached. Reload the page; ' +
     'if it keeps happening the content host may be temporarily unavailable.</p>' +
-    '<p><button onclick="location.reload()" style="background:#0B2545;color:#fff;border:0;' +
+    '<p><button onclick="location.reload()" style="background:#ED1C24;color:#fff;border:0;' +
     'padding:11px 20px;border-radius:10px;font-size:.95rem;cursor:pointer">Reload</button></p></div>';
 }
 </script>

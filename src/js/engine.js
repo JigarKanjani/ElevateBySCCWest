@@ -280,13 +280,13 @@ function radarSVG(score, size) {
   var rings = "";
   [1, 2, 3, 4].forEach(function (lv) {
     rings += '<polygon points="' + poly(doms.map(function () { return lv; })) +
-      '" fill="none" stroke="#D9E3EA" stroke-width="1"/>';
+      '" fill="none" stroke="#DFDCDB" stroke-width="1"/>';
   });
   var spokes = "";
   doms.forEach(function (d, i) {
     var p = pt(i, 4);
     spokes += '<line x1="' + cx + '" y1="' + cy + '" x2="' + p[0] + '" y2="' + p[1] +
-      '" stroke="#E6EDF2" stroke-width="1"/>';
+      '" stroke="#EEEDED" stroke-width="1"/>';
   });
   var benchPts = poly(doms.map(function (d) { return score.domains[d.id].benchmark; }));
   var youPts = poly(doms.map(function (d) { return score.domains[d.id].level; }));
@@ -306,13 +306,13 @@ function radarSVG(score, size) {
     if (d.id === "logi") name = "Logistics";
     if (d.id === "proc") name = "Procurement";
     labels += '<text x="' + p[0] + '" y="' + (p[1] + 4) + '" text-anchor="' + anchor +
-      '" font-size="10.5" font-weight="600" fill="#6B7C8D" font-family="Inter,sans-serif">' + name + '</text>';
+      '" font-size="10.5" font-weight="600" fill="#5C5C61" font-family="Inter,sans-serif">' + name + '</text>';
   });
   var pad = 58;
   return '<svg viewBox="' + (-pad) + ' -8 ' + (size + pad * 2) + " " + (size + 16) +
     '" width="100%" style="max-width:' + (size + pad) + 'px" role="img" aria-label="Competency radar">' +
     rings + spokes +
-    '<polygon points="' + benchPts + '" fill="rgba(245,165,36,.13)" stroke="#F5A524" stroke-width="1.8" stroke-dasharray="5 4"/>' +
-    '<polygon points="' + youPts + '" fill="rgba(0,179,154,.26)" stroke="#00B39A" stroke-width="2.4"/>' +
+    '<polygon points="' + benchPts + '" fill="rgba(169,163,161,.18)" stroke="#7A7472" stroke-width="1.8" stroke-dasharray="5 4"/>' +
+    '<polygon points="' + youPts + '" fill="rgba(237,28,36,.24)" stroke="#ED1C24" stroke-width="2.4"/>' +
     labels + '</svg>';
 }

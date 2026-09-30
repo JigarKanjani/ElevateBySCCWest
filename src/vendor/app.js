@@ -68,7 +68,8 @@ function topbar() {
   }
   return '<div class="topbar"><div class="topbar-in">' +
     '<button class="brand" onclick="go(\'home\')">' +
-      '<span class="brand-mark">E</span>' +
+      '<img class="brand-mark" src="assets/logo-mark-144.png" width="44" height="44" ' +
+      'alt="Supply Chain Canada West">' +
       '<span class="brand-text"><span class="brand-name">Elevate</span>' +
       '<span class="brand-sub">Supply Chain Canada West</span></span></button>' +
     '<span class="topbar-spacer"></span>' +
@@ -94,7 +95,10 @@ function stepper(active) {
 
 function footer() {
   return '<footer><div class="wrap">' +
-    '<b>Elevate</b> &nbsp;·&nbsp; A competency assessment and learning concept for Supply Chain Canada West<br>' +
+    '<div class="foot-brand">' +
+      '<img src="assets/logo-mark-144.png" width="44" height="44" alt="Supply Chain Canada West">' +
+      '<b>Elevate</b></div>' +
+    'A competency assessment and learning concept for Supply Chain Canada West<br>' +
     '<span style="opacity:.75">Prototype for internal review. Self-assessment and development guidance only. ' +
     'Not a credential and not part of the SCMP designation process.</span>' +
     "</div></footer>";
@@ -110,7 +114,7 @@ function vHome() {
     'verifies what your resume claims, and builds a learning path from the gap. Built on the competency ' +
     'framework behind the profession in Canada.</p>' +
     '<a class="btn btn-accent btn-lg" onclick="go(\'goal\')">Start my assessment</a> ' +
-    '<a class="btn btn-ghost btn-lg" style="color:#fff;border-color:rgba(255,255,255,.28)" onclick="go(\'pricing\')">See membership</a>' +
+    '<a class="btn btn-ghost btn-lg" style="color:#fff;border-color:rgba(255,255,255,.4)" onclick="go(\'pricing\')">See membership</a>' +
     '<div class="hero-stats">' +
       '<div class="hero-stat"><div class="n">10</div><div class="l">Competency domains</div></div>' +
       '<div class="hero-stat"><div class="n">6</div><div class="l">Career tracks</div></div>' +
@@ -140,7 +144,7 @@ function vHome() {
         '<div class="skillrow"><span class="ic">\u{1F4D1}</span><div class="nm"><b>Contract Management</b>' +
         '<small>Resume evidence: strong</small></div><div class="bar"><i style="width:92%"></i></div></div>' +
         '<div class="skillrow"><span class="ic">✅</span><div class="nm"><b>Demonstrated in assessment</b>' +
-        '<small>2 of 3 correct, one advanced item missed</small></div><div class="bar"><i style="width:58%;background:linear-gradient(90deg,#F5A524,#FFBC4D)"></i></div></div>' +
+        '<small>2 of 3 correct, one advanced item missed</small></div><div class="bar"><i style="width:58%;background:linear-gradient(90deg,var(--warn-500),var(--warn-400))"></i></div></div>' +
         '<div class="notice" style="margin-top:16px"><b>Verified level: Developing.</b> ' +
         "Exposure is broad but risk allocation and remedy design are not yet secure. Two courses close this.</div>" +
       "</div>" +
@@ -373,7 +377,7 @@ function vResults() {
       '<div class="cap">Role readiness · ' + esc(t.name) + "</div>" +
       '<div class="big">' + sc.readiness + "%</div>" +
       "<h2>" + esc(sc.band) + "</h2>" +
-      '<p style="color:#A9C2D4;margin:0">You answered ' + sc.correct + " of " + sc.total +
+      '<p style="color:var(--on-dark-2);margin:0">You answered ' + sc.correct + " of " + sc.total +
       " assessment items correctly across " + DOMAINS.length + " competency domains.</p>" +
     "</div>" +
 
