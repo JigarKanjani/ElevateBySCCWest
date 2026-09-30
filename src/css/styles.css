@@ -650,3 +650,206 @@ img, svg, canvas { max-width:100%; height:auto; }
 .prio-1 { background:var(--red-fill); color:#fff; border-color:var(--red-fill); }
 .prio-2 { background:rgba(237,28,36,.13); color:var(--red-700); border-color:rgba(237,28,36,.3); }
 .prio-3 { background:var(--paper-3); color:var(--ink-3); border-color:var(--line); }
+
+/* ------------------------------------------------------------------ *
+   Tap-target spacing
+   Adjacent controls were measuring 2px apart in the nav and 0px between
+   the hero CTAs, which is a mis-tap on a phone. Nothing interactive sits
+   closer than 8px now, and 10px on touch pointers.
+ * ------------------------------------------------------------------ */
+.cta-row { display:flex; flex-wrap:wrap; gap:12px; align-items:center; }
+@media(max-width:480px){
+  .cta-row { gap:10px; }
+  .cta-row > .btn { width:100%; }
+}
+
+.topnav { gap:6px; }
+@media(max-width:700px){
+  .topnav { gap:6px; }
+  .topnav button { padding:7px 11px; }
+}
+@media (pointer:coarse) {
+  .topnav { gap:10px; }
+  .cta-row { gap:12px; }
+  /* stacked lists of controls keep their own breathing room */
+  .opt + .opt { margin-top:10px; }
+  .faq-q + .faq-q { margin-top:10px; }
+}
+
+/* ==================================================================== *
+   Challenge player
+   Formats are tap-first so they work on a phone without drag, and each
+   one is a real object to act on — a document, a set of cards, a scale —
+   rather than four sentences to guess between.
+ * ==================================================================== */
+
+.kindchip {
+  display:inline-flex; align-items:center; font-size:.72rem; font-weight:700;
+  text-transform:uppercase; letter-spacing:.07em; padding:4px 11px; border-radius:99px;
+  background:var(--red-fill); color:#fff;
+}
+.qdom { font-size:.8rem; color:var(--ink-3); font-weight:600; margin:14px 0 6px; }
+.qhint { font-size:.85rem; color:var(--ink-3); margin:-6px 0 14px; }
+
+/* ---- spot: a document you tap ---- */
+.docmock { border:1px solid var(--line); border-radius:12px; overflow:hidden; background:var(--paper-2); }
+.docmock-h {
+  padding:12px 15px; background:var(--paper-3); border-bottom:1px solid var(--line);
+  display:flex; flex-direction:column; gap:2px;
+}
+.docmock-h b { font-size:.94rem; color:var(--heading); }
+.docmock-h span { font-size:.76rem; color:var(--ink-3); }
+.docline {
+  display:block; width:100%; text-align:left; border:0; border-bottom:1px solid var(--line);
+  background:var(--paper); padding:13px 15px; cursor:pointer; font-family:inherit;
+  transition:background .12s ease;
+}
+.docline:last-child { border-bottom:0; }
+.docline:hover:not(:disabled) { background:var(--paper-2); }
+.docline-h {
+  display:block; font-size:.71rem; text-transform:uppercase; letter-spacing:.07em;
+  font-weight:700; color:var(--ink-3); margin-bottom:3px;
+}
+.docline-t { display:block; font-size:.92rem; color:var(--ink); line-height:1.5; }
+.docline.is-sel { background:rgba(237,28,36,.07); box-shadow:inset 3px 0 0 var(--red-fill); }
+.docline.is-ok  { background:rgba(21,121,75,.10); box-shadow:inset 3px 0 0 var(--ok-500); }
+.docline.is-bad { background:rgba(179,14,22,.08); box-shadow:inset 3px 0 0 var(--err-500); }
+
+/* ---- sort: cards into buckets ---- */
+.sortgrid { display:grid; gap:10px; }
+.sortitem { border:1px solid var(--line); border-radius:11px; padding:12px 13px; background:var(--paper); }
+.sortitem.is-ok  { border-color:var(--ok-500); background:rgba(21,121,75,.06); }
+.sortitem.is-bad { border-color:var(--err-500); background:rgba(179,14,22,.05); }
+.sortitem-l { font-size:.9rem; color:var(--ink); margin-bottom:9px; line-height:1.45; }
+.sortbtns { display:flex; gap:7px; flex-wrap:wrap; }
+.bucketbtn {
+  border:1px solid var(--line); background:var(--paper-2); color:var(--ink-2);
+  border-radius:99px; padding:6px 13px; font-size:.81rem; font-weight:600;
+  cursor:pointer; font-family:inherit;
+}
+.bucketbtn:hover:not(:disabled) { border-color:var(--red-500); color:var(--heading); }
+.bucketbtn.on { background:var(--red-fill); color:#fff; border-color:var(--red-fill); }
+.sortfix { font-size:.79rem; color:var(--ink-3); margin-top:8px; }
+
+/* ---- order: tap into sequence ---- */
+.orderbox { display:grid; gap:10px; }
+.orderchosen { display:grid; gap:7px; }
+.orderrow {
+  display:flex; align-items:center; gap:11px; padding:11px 13px;
+  border:1px solid var(--line); border-radius:10px; background:var(--paper-2);
+}
+.orderrow.is-ok  { border-color:var(--ok-500); background:rgba(21,121,75,.07); }
+.orderrow.is-bad { border-color:var(--err-500); background:rgba(179,14,22,.06); }
+.ordernum {
+  width:24px; height:24px; border-radius:50%; flex:none; display:grid; place-items:center;
+  background:var(--red-fill); color:#fff; font-size:.78rem; font-weight:700;
+}
+.orderrow.is-bad .ordernum { background:var(--err-500); }
+.orderrow.is-ok .ordernum  { background:var(--ok-500); }
+.orderlbl { font-size:.89rem; color:var(--ink); line-height:1.45; }
+.orderpool { display:grid; gap:7px; }
+.orderpick {
+  text-align:left; border:1.5px dashed var(--line); background:var(--paper);
+  border-radius:10px; padding:12px 14px; font-size:.89rem; color:var(--ink);
+  cursor:pointer; font-family:inherit; line-height:1.45;
+}
+.orderpick:hover:not(:disabled) { border-color:var(--red-500); border-style:solid; background:var(--paper-2); }
+
+/* ---- pick: choose N, options are length matched ---- */
+.pickbox { display:grid; gap:9px; }
+.pickopt {
+  display:flex; align-items:flex-start; gap:10px; text-align:left; width:100%;
+  border:1.5px solid var(--line); background:var(--paper); border-radius:11px;
+  padding:13px 15px; cursor:pointer; font-family:inherit; font-size:.92rem;
+  color:var(--ink); line-height:1.45;
+}
+.pickopt:before {
+  content:""; width:18px; height:18px; border-radius:5px; border:2px solid var(--line);
+  flex:none; margin-top:1px;
+}
+.pickopt.on { border-color:var(--red-500); background:rgba(237,28,36,.05); }
+.pickopt.on:before { background:var(--red-fill); border-color:var(--red-fill);
+  box-shadow:inset 0 0 0 2px var(--paper); }
+.pickopt.is-ok  { border-color:var(--ok-500); background:rgba(21,121,75,.08); }
+.pickopt.is-ok:before  { background:var(--ok-500); border-color:var(--ok-500);
+  box-shadow:inset 0 0 0 2px var(--paper); }
+.pickopt.is-bad { border-color:var(--err-500); background:rgba(179,14,22,.06); }
+
+/* ---- number ---- */
+.numbox { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.numin {
+  font-family:inherit; font-size:1.3rem; font-weight:700; color:var(--heading);
+  border:1.5px solid var(--line); border-radius:11px; padding:12px 15px;
+  width:170px; background:var(--paper); -moz-appearance:textfield;
+}
+.numin:focus { outline:2px solid var(--red-500); outline-offset:-1px; }
+.numunit { font-size:.88rem; color:var(--ink-3); font-weight:600; }
+
+/* ---- slider ---- */
+.slidebox { padding:4px 0; }
+.slideval { font-size:1.6rem; font-weight:700; color:var(--red-500); letter-spacing:-.02em; }
+.slideval span { font-size:.85rem; color:var(--ink-3); font-weight:600; }
+.slidein { width:100%; margin:12px 0 4px; accent-color:var(--red-fill); height:28px; }
+.slidelbl { display:flex; justify-content:space-between; gap:10px;
+  font-size:.76rem; color:var(--ink-3); }
+.slidelbl span:nth-child(2) { text-align:center; }
+.slidelbl span:last-child { text-align:right; }
+
+/* ---- feedback tone ---- */
+.why-ok   { border-left-color:var(--ok-500); }
+.why-part { border-left-color:var(--warn-500); }
+.why-no   { border-left-color:var(--err-500); }
+
+@media (pointer:coarse) {
+  .docline { padding-top:15px; padding-bottom:15px; }
+  .bucketbtn { min-height:40px; }
+  .orderpick, .pickopt { min-height:52px; }
+}
+
+/* ==================================================================== *
+   Live workshops
+   The report ends on something bookable. Cards link straight out to the
+   association's registration page, so this section is the funnel.
+ * ==================================================================== */
+.evlist { display:grid; gap:10px; margin-top:14px; }
+.evcard {
+  display:flex; gap:14px; align-items:flex-start; text-decoration:none;
+  border:1px solid var(--line); border-radius:12px; padding:14px;
+  background:var(--paper); transition:.15s ease; color:inherit;
+}
+.evcard:hover { border-color:var(--red-500); box-shadow:var(--shadow); transform:translateY(-1px); }
+.evdate {
+  flex:none; width:52px; text-align:center; border-radius:9px; padding:7px 0;
+  background:var(--red-fill); color:#fff; font-size:.72rem; font-weight:700;
+  text-transform:uppercase; letter-spacing:.04em; line-height:1.1;
+}
+.evdate span { display:block; font-size:1.25rem; letter-spacing:-.02em; }
+.evbody { flex:1; min-width:0; }
+.evtype {
+  font-size:.7rem; text-transform:uppercase; letter-spacing:.07em;
+  font-weight:700; color:var(--ink-3); margin-bottom:3px;
+}
+.evbody h4 { font-size:.96rem; margin:0 0 5px; color:var(--heading); line-height:1.35; font-weight:600; }
+.evbody p { font-size:.84rem; color:var(--ink-2); margin:0 0 7px; line-height:1.5; }
+.evfacts { font-size:.8rem; color:var(--ink-2); }
+.evfacts b { color:var(--red-600); }
+.evmatch {
+  display:inline-block; margin-top:8px; font-size:.75rem; font-weight:650;
+  color:var(--ok-500); background:rgba(21,121,75,.09);
+  border:1px solid rgba(21,121,75,.26); border-radius:99px; padding:3px 10px;
+}
+.evgo { flex:none; color:var(--red-500); font-size:1.1rem; font-weight:700; align-self:center; }
+@media(max-width:560px){
+  .evcard { gap:11px; padding:12px; }
+  .evgo { display:none; }
+  .evdate { width:46px; }
+}
+/* loading placeholder */
+.evskel { display:grid; gap:10px; margin-top:4px; }
+.evskel i {
+  display:block; height:74px; border-radius:12px; border:1px solid var(--line);
+  background:linear-gradient(90deg,var(--paper-2),var(--paper-3),var(--paper-2));
+  background-size:200% 100%; animation:evshim 1.3s linear infinite;
+}
+@keyframes evshim { from{background-position:200% 0} to{background-position:-200% 0} }
+@media (prefers-reduced-motion: reduce) { .evskel i { animation:none; } }

@@ -107,20 +107,22 @@ function footer() {
 
 /* ---------------- views ---------------- */
 function vHome() {
-  var totalQ = QUESTIONS.length;
+  var totalQ = CHALLENGES.length;
   return '<div class="hero"><div class="wrap">' +
     '<span class="eyebrow">Supply Chain Canada West · Alberta &amp; BC</span>' +
     '<h1>Know exactly where you stand. <span class="accent">Then close the gap.</span></h1>' +
     '<p class="lede">Tell us the job you want. Add your resume. Answer some questions. ' +
     'In about fifteen minutes you get a clear picture of what you are already good at, ' +
     'what is missing for that job, and exactly which lessons close the difference.</p>' +
-    '<a class="btn btn-accent btn-lg" onclick="go(\'goal\')">Start — it is free</a> ' +
+    '<div class="cta-row">' +
+    '<a class="btn btn-accent btn-lg" onclick="go(\'goal\')">Start — it is free</a>' +
     '<a class="btn btn-ghost btn-lg" style="color:#fff;border-color:rgba(255,255,255,.4)" onclick="go(\'pricing\')">See membership</a>' +
+    '</div>' +
     '<div class="hero-stats">' +
       '<div class="hero-stat"><div class="n">10</div><div class="l">Skill areas</div></div>' +
       '<div class="hero-stat"><div class="n">6</div><div class="l">Jobs to aim for</div></div>' +
       '<div class="hero-stat"><div class="n">' + TOTAL_LESSONS + '</div><div class="l">Lessons</div></div>' +
-      '<div class="hero-stat"><div class="n">' + totalQ + '</div><div class="l">Quiz questions</div></div>' +
+      '<div class="hero-stat"><div class="n">' + totalQ + '</div><div class="l">Challenges</div></div>' +
     "</div></div></div>" +
 
     '<div class="section"><div class="wrap">' +
@@ -279,10 +281,15 @@ function vSkills() {
     'it will show as missing here. Either ' +
     '<a href="#" onclick="go(\'upload\');return false">go back and add it</a>, ' +
     'or carry on — the quiz will pick it up anyway.</div>' +
-    '<div style="margin-top:22px"><button class="btn btn-accent btn-lg" onclick="startQuiz()">' +
-    'Next: take the quiz</button>' +
-    '<p class="muted" style="margin:10px 0 0;font-size:.85rem">About 20 questions, roughly 10 minutes. ' +
-    'You can stop and come back — your progress is saved on this device.</p></div></div></div>';
+    '<div style="margin-top:22px"><div class="cta-row">' +
+    '<button class="btn btn-accent btn-lg" onclick="startQuiz()">Next: take the challenges</button>' +
+    '<button class="btn btn-ghost" onclick="skipQuiz()">Skip — score me on my resume</button>' +
+    '</div>' +
+    '<p class="muted" style="margin:12px 0 0;font-size:.85rem;max-width:58ch">' +
+    'Eleven short challenges, about five minutes. No timer, no trick questions. ' +
+    'If you skip, you still get your gap report — but every level is capped at ' +
+    '<b>Developing</b>, because a resume can show exposure and cannot show judgement.</p>' +
+    '</div></div></div>';
 }
 function mini(l, v) {
   return '<div class="card card-pad" style="padding:16px 18px"><div class="muted" style="font-size:.74rem;' +
@@ -293,49 +300,84 @@ function mini(l, v) {
 /* ---------------- quiz ---------------- */
 function startQuiz() {
   S.session = buildAssessment(S.track, S.parsed);
-  S.quizState = { q: null, answered: false, choice: null, total: totalPlanned(S.session) };
+  S.quizState = { q: null, answered: false, resp: null, total: totalPlanned(S.session), score: 0 };
   S.quizState.q = nextQuestion(S.session);
+  if (S.quizState.q) S.quizState.resp = respInit(S.quizState.q);
   go("quiz");
+}
+
+/* Skip straight to the report on resume evidence alone. */
+function skipQuiz() {
+  S.session = buildAssessment(S.track, S.parsed);
+  S.session.skipped = true;
+  S.score = scoreResumeOnly(S.parsed, S.track);
+  S.quizState = null;
+  save();
+  go("results");
 }
 
 function vQuiz() {
   var st = S.quizState;
   if (!st || !st.q) { return vResults(); }
-  var q = st.q, d = DOMAIN_BY_ID[q.dom];
+  var ch = st.q, d = DOMAIN_BY_ID[ch.dom];
   var n = S.session.answers.length + 1;
   var pct = ((n - 1) / st.total) * 100;
-  var diffLabel = ["", "Foundational", "Applied", "Advanced"][q.d];
+  var meta = KIND_META[ch.kind] || { label: "Challenge", hint: "" };
+  var ready = respReady(ch, st.resp);
 
-  var opts = q.opts.map(function (o, i) {
-    var cls = "opt", tag = "";
-    if (st.answered) {
-      if (i === q.a) { cls += " right"; tag = '<span class="tag" >Correct</span>'; }
-      else if (i === st.choice) { cls += " wrong"; tag = '<span class="tag" >Your answer</span>'; }
-    }
-    return '<button class="' + cls + '" ' + (st.answered ? "disabled" : 'onclick="answer(' + i + ')"') + ">" +
-      tag + esc(o) + "</button>";
-  }).join("");
+  var feedback = "";
+  if (st.answered) {
+    var sc = st.score;
+    var head = sc >= 0.99 ? "Nailed it." : sc >= 0.5 ? "Close." : "Not this time.";
+    feedback = '<div class="why fadein ' + (sc >= 0.99 ? "why-ok" : sc >= 0.5 ? "why-part" : "why-no") + '">' +
+      '<b>' + head + '</b> ' + esc(ch.why) + '</div>';
+  }
 
   return '<div class="section"><div class="wrap-narrow">' + stepper(3) +
     '<div class="qcard fadein">' +
-      '<div class="qmeta"><span class="pill">' + d.icon + " " + esc(d.name) + "</span>" +
-      '<span class="muted">Question ' + n + " of ~" + st.total + ' · <b>' + diffLabel + "</b></span></div>" +
+      '<div class="qmeta">' +
+        '<span class="kindchip">' + esc(meta.label) + '</span>' +
+        '<span class="muted">' + n + ' of ' + st.total + '</span>' +
+      '</div>' +
       '<div class="qprog"><i style="width:' + pct + '%"></i></div>' +
-      '<div class="qtext">' + esc(q.q) + "</div>" + opts +
-      (st.answered ? '<div class="why fadein"><b>' +
-        (st.choice === q.a ? "Correct. " : "Not quite. ") + "</b>" + esc(q.why) + "</div>" +
-        '<div style="margin-top:18px"><button class="btn btn-accent" onclick="nextQ()">' +
-        (nextQuestion(S.session) ? "Next question" : "See my results") + "</button></div>" : "") +
-    "</div></div></div>";
+      '<div class="qdom">' + d.icon + ' ' + esc(d.name) + '</div>' +
+      '<div class="qtext">' + esc(ch.prompt) + '</div>' +
+      (st.answered ? "" : '<div class="qhint">' + esc(meta.hint) + '</div>') +
+      renderChallenge(ch, st.resp, st.answered) +
+      feedback +
+      '<div class="cta-row" style="margin-top:18px">' +
+        (st.answered
+          ? '<button class="btn btn-accent" onclick="nextQ()">' +
+            (nextQuestion(S.session) ? "Next" : "See my results") + '</button>'
+          : '<button class="btn btn-accent" id="submitbtn" ' + (ready ? "" : "disabled") +
+            ' onclick="cSubmit()">Check my answer</button>' +
+            '<button class="btn btn-ghost btn-sm" onclick="cSkipOne()">Not sure — skip</button>') +
+      '</div>' +
+    '</div>' +
+    '<p class="muted center" style="font-size:.83rem;margin-top:14px">' +
+    'No timer, and a wrong answer costs you nothing but a more accurate report. ' +
+    '<a href="#" onclick="skipQuiz();return false">Skip the rest</a> and score me on my resume alone.</p>' +
+    '</div></div>';
 }
 
-function answer(i) {
+function cSubmit() {
   var st = S.quizState;
-  if (st.answered) return;
-  st.answered = true; st.choice = i;
-  recordAnswer(S.session, st.q, i);
+  if (st.answered || !respReady(st.q, st.resp)) return;
+  st.score = gradeChallenge(st.q, st.resp);
+  st.answered = true;
+  recordAnswer(S.session, st.q, st.score);
   render();
 }
+
+function cSkipOne() {
+  var st = S.quizState;
+  if (st.answered) return;
+  st.score = 0;
+  st.answered = true;
+  recordAnswer(S.session, st.q, 0);
+  render();
+}
+
 function nextQ() {
   var nx = nextQuestion(S.session);
   if (!nx) {
@@ -344,7 +386,7 @@ function nextQ() {
     go("results");
     return;
   }
-  S.quizState = { q: nx, answered: false, choice: null, total: S.quizState.total };
+  S.quizState = { q: nx, answered: false, resp: respInit(nx), total: S.quizState.total, score: 0 };
   render();
 }
 
@@ -454,8 +496,10 @@ function vResults() {
       '<div class="big">' + sc.readiness + '%</div>' +
       '<h2>' + esc(sc.band) + '</h2>' +
       '<p style="color:var(--on-dark-2);margin:0;max-width:46ch;margin-inline:auto">' +
-      'This is how close you are to what this job needs, across the ' +
-      scored.length + ' skill areas it is measured on.</p>' +
+      (sc.skipped
+        ? 'Estimated from your resume only, across the ' + scored.length + ' skill areas this job is measured on.'
+        : 'This is how close you are to what this job needs, across the ' + scored.length +
+          ' skill areas it is measured on.') + '</p>' +
     '</div>' +
 
     /* ---- the four numbers that matter ---- */
@@ -472,6 +516,13 @@ function vResults() {
         '<div class="tn">' + path.cpd + ' CPD hours</div></div>' +
     '</div>' +
 
+    (sc.skipped
+      ? '<div class="notice" style="margin-bottom:14px"><b>You skipped the challenges.</b> ' +
+        'Everything below is read from your resume alone, so each level is capped at ' +
+        '<b>Developing</b> — a resume can show what you have been exposed to, but it cannot ' +
+        'show judgement. <a href="#" onclick="startQuiz();return false">Take the challenges</a> ' +
+        'to lift the cap and get a real level.</div>'
+      : '') +
     '<div class="notice notice-info" style="margin-bottom:22px"><b>What this means.</b> ' + esc(plain) +
     ' Your answers were compared with what this job needs, not with other people.</div>' +
 
@@ -526,6 +577,8 @@ function vResults() {
       '</div>' +
     '</div>' +
 
+    vEventsSection() +
+
     /* ---- what happens next ---- */
     '<div class="card card-pad" style="margin-top:20px">' +
       '<h3>What to do next</h3>' +
@@ -535,7 +588,7 @@ function vResults() {
           ' lessons</b>, roughly <b>' + hrs + ' hours</b>, worth <b>' + path.cpd + ' CPD hours</b>.</p>'
         : '<p class="muted">You have no outstanding gaps for this role. Browse the full catalogue ' +
           'to go deeper, or reassess against a more senior track.</p>') +
-      '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">' +
+      '<div class="cta-row">' +
       '<button class="btn btn-accent btn-lg" onclick="go(\'path\')">' +
       (path.recs.length ? 'Show me my learning path' : 'Browse the catalogue') + '</button>' +
       (S.confirmReset
@@ -545,6 +598,101 @@ function vResults() {
         : '<button class="btn btn-ghost" onclick="askReset()">Start over</button>') +
       '</div>' +
     '</div></div></div>';
+}
+
+
+/* ---------------- live workshops ---------------- */
+/* Pulled from supplychaincanada.com/events through /api/events on each visit,
+   then ordered by how well each session matches the reader's own gaps, so the
+   report ends on something they can book rather than a generic list. */
+
+var EV = { state: "idle", events: [], err: "" };
+
+function loadEvents() {
+  if (EV.state === "loading" || EV.state === "done") return;
+  EV.state = "loading";
+  fetch("/api/events?limit=6")
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      EV.events = (d && d.events) || [];
+      EV.err = d && d.ok === false ? (d.error || "unavailable") : "";
+      EV.state = "done";
+      var host = el("evhost");
+      if (host) host.innerHTML = evInner();
+    })
+    .catch(function (e) {
+      EV.state = "done"; EV.err = String(e.message || e);
+      var host = el("evhost");
+      if (host) host.innerHTML = evInner();
+    });
+}
+
+/* Rank by overlap with the domains this person is actually short in. */
+function rankEvents(list) {
+  var sc = S.score;
+  var gaps = {};
+  if (sc) {
+    DOMAINS.forEach(function (d) {
+      var r = sc.domains[d.id];
+      if (r && r.gap > 0) gaps[d.id] = r.gap;
+    });
+  }
+  return list.slice().sort(function (a, b) {
+    var sa = (a.domains || []).reduce(function (n, d) { return n + (gaps[d] || 0); }, 0);
+    var sb = (b.domains || []).reduce(function (n, d) { return n + (gaps[d] || 0); }, 0);
+    if (sb !== sa) return sb - sa;
+    return 0;
+  });
+}
+
+function evCard(e) {
+  var sc = S.score;
+  var matched = (e.domains || []).filter(function (d) {
+    return sc && sc.domains[d] && sc.domains[d].gap > 0;
+  });
+  var names = matched.map(function (d) { return DOMAIN_BY_ID[d].name; });
+
+  var facts = [];
+  if (e.time) facts.push(esc(e.time));
+  if (e.cpd) facts.push('<b>' + e.cpd + ' CPD</b>');
+  if (e.memberFee) facts.push("Members " + esc(e.memberFee));
+
+  return '<a class="evcard" href="' + esc(e.url) + '" target="_blank" rel="noopener noreferrer">' +
+    '<div class="evdate"><span>' + esc(e.day) + '</span>' + esc(e.month) + '</div>' +
+    '<div class="evbody">' +
+      '<div class="evtype">' + esc(e.type) + (e.location ? ' · ' + esc(e.location) : "") + '</div>' +
+      '<h4>' + esc(e.title) + '</h4>' +
+      (e.brief ? '<p>' + esc(e.brief) + '</p>' : "") +
+      (facts.length ? '<div class="evfacts">' + facts.join(" &nbsp;·&nbsp; ") + '</div>' : "") +
+      (names.length
+        ? '<div class="evmatch">Closes your gap in ' + esc(names.slice(0, 2).join(" and ")) + '</div>'
+        : "") +
+    '</div>' +
+    '<span class="evgo" aria-hidden="true">→</span></a>';
+}
+
+function evInner() {
+  if (EV.state !== "done") {
+    return '<div class="evskel"><i></i><i></i><i></i></div>';
+  }
+  if (!EV.events.length) {
+    return '<div class="notice notice-info">We could not reach the events calendar just now. ' +
+      '<a href="https://www.supplychaincanada.com/events" target="_blank" rel="noopener noreferrer">' +
+      'See everything on supplychaincanada.com</a>.</div>';
+  }
+  return rankEvents(EV.events).map(evCard).join("") +
+    '<a class="btn btn-ghost btn-sm" style="margin-top:12px" ' +
+    'href="https://www.supplychaincanada.com/events" target="_blank" rel="noopener noreferrer">' +
+    'See the full calendar</a>';
+}
+
+function vEventsSection() {
+  return '<div class="card card-pad" style="margin-top:20px">' +
+    '<h3 style="margin-bottom:4px">Coming up — book a session</h3>' +
+    '<p class="muted" style="font-size:.87rem">Live from the Supply Chain Canada calendar, ' +
+    'with the ones that close your gaps first.</p>' +
+    '<div id="evhost" class="evlist">' + evInner() + '</div>' +
+    '</div>';
 }
 
 /* ---------------- learning path ---------------- */
@@ -828,6 +976,7 @@ function render() {
   }
   el("app").innerHTML = topbar() + body + footer();
   if (S.view === "upload") wireDrop();
+  if (S.view === "results" || S.view === "path") loadEvents();
 }
 
 function wireDrop() {

@@ -107,10 +107,70 @@ system does:
 | 1 · Your goal | Pick one of six target jobs | The benchmark they are measured against |
 | 2 · Your resume | Upload a file or paste text | Parsed in-browser, never uploaded |
 | 3 · What we found | Review and correct | What the resume *claims*, clearly labelled as unverified |
-| 4 · The quiz | ~20 adaptive questions | Difficulty tracks their answers |
-| 5 · Your gaps | — | The report, then the lesson list that closes it |
+| 4 · The challenges | 11 short interactive items | An adaptive read on what they can actually do |
+| 5 · Your gaps | — | The report, the lesson list, and live workshops to book |
+
+Step 4 is skippable. Skipping still produces a full report, but every level is
+capped at **Developing** and the report says so: a resume can show exposure, it
+cannot show judgement.
 
 Progress is saved to `localStorage`, so the flow survives a closed tab.
+
+## The challenges
+
+The previous bank was 61 multiple-choice questions and it did not work. Measured
+across the whole bank:
+
+- **98.4%** of the time the correct answer was the longest option (chance: 25%)
+- Correct options averaged **115 characters against 37** for the distractors
+- **57 of 61** answers were option B
+
+Anyone could score ~93% by always picking B, or by picking the longest text,
+without reading a single question. It was replaced rather than patched, because
+shuffling the options fixes the position tell but not the length tell.
+
+Each item is now answered by doing something to an artefact:
+
+| Kind | What you do |
+|---|---|
+| `spot` | Tap the clause on a contract, invoice or BOL that is the problem |
+| `sort` | Put each card in a bucket — Kraljic quadrant, emission scope, ERP/WMS/TMS |
+| `order` | Tap the steps into sequence |
+| `number` | Work out a figure and type it |
+| `slider` | Place a value on a scale |
+| `pick` | Choose the two that apply, from length-matched options |
+
+`sort` and `order` carry **partial credit**, so three of four cards in the right
+bucket scores better than none — the result reflects what someone knows instead
+of collapsing to right/wrong.
+
+A note on AI: these formats are much harder to shortcut than multiple choice,
+because there is no text-shaped question with four text-shaped options to paste
+anywhere, and the answer is a set of interactions with a rendered artefact. That
+raises the effort considerably. It is not proof, and nothing delivered in a
+browser can be.
+
+## Live workshops
+
+`api/events.js` is a serverless function that reads
+`supplychaincanada.com/events` on request and returns JSON. It runs two passes,
+because the data is split across two pages:
+
+1. The listing gives title, date, type, location, registration deadline and the
+   registration link.
+2. CPD credits and time of day exist only on the individual event page, so the
+   few events actually being shown are enriched from there. **Events that do not
+   publish a CPD value simply omit it — nothing is invented.**
+
+Events are tagged to skill areas by keyword, and the report orders them by
+overlap with the reader's own gaps, so the section leads with the session that
+closes their biggest gap rather than whatever is next on the calendar. Responses
+are edge-cached (`s-maxage=1800`) so a burst of report views does not become a
+burst of traffic against the association's site. If the fetch fails the section
+degrades to a link to the full calendar rather than breaking the report.
+
+Note that `data-western` is `"no"` on every record in the source, so it cannot be
+used to filter; the West filter is province `ab`/`bc` plus national and online.
 
 ## The gap report
 

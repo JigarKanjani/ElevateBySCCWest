@@ -133,9 +133,13 @@ function buildAssessment(trackId, parsed) {
     var cb = parsed ? parsed.domains[b.id].claimed : 0;
     return cb - ca;
   });
+  /* The old plan asked 24 items. The resume already supplies a prior for every
+     domain, so the quiz only needs to resolve the ones that decide the result:
+     two items each for the four domains this role weights most, one each for
+     the next three. Nine items, and the adaptive tier still moves. */
   var plan = [];
-  ranked.slice(0, 7).forEach(function (d) { plan.push({ dom: d.id, n: 3 }); });
-  ranked.slice(7).forEach(function (d) { plan.push({ dom: d.id, n: 1 }); });
+  ranked.slice(0, 4).forEach(function (d) { plan.push({ dom: d.id, n: 2 }); });
+  ranked.slice(4, 7).forEach(function (d) { plan.push({ dom: d.id, n: 1 }); });
   return { trackId: trackId, plan: plan, asked: [], answers: [], di: 0, qi: 0, curDiff: 2 };
 }
 
@@ -143,7 +147,7 @@ function nextQuestion(sess) {
   while (sess.di < sess.plan.length) {
     var step = sess.plan[sess.di];
     if (sess.qi >= step.n) { sess.di++; sess.qi = 0; sess.curDiff = 2; continue; }
-    var pool = (QUESTIONS_BY_DOMAIN[step.dom] || []).filter(function (q) {
+    var pool = (CHALLENGES_BY_DOMAIN[step.dom] || []).filter(function (q) {
       return sess.asked.indexOf(q.id) === -1;
     });
     if (!pool.length) { sess.di++; sess.qi = 0; sess.curDiff = 2; continue; }
@@ -155,17 +159,19 @@ function nextQuestion(sess) {
   return null;
 }
 
-function recordAnswer(sess, q, choice) {
+function recordAnswer(sess, q, score) {
+  /* score is 0..1 — sort and order carry partial credit, so a near miss is
+     not scored the same as no idea. */
   sess.asked.push(q.id);
-  sess.answers.push({ id: q.id, dom: q.dom, d: q.d, choice: choice, correct: choice === q.a });
+  sess.answers.push({ id: q.id, dom: q.dom, d: q.d, score: score, correct: score >= 0.99 });
   sess.qi++;
-  if (choice === q.a) sess.curDiff = Math.min(3, sess.curDiff + 1);
-  else sess.curDiff = Math.max(1, sess.curDiff - 1);
+  if (score >= 0.75) sess.curDiff = Math.min(3, sess.curDiff + 1);
+  else if (score <= 0.25) sess.curDiff = Math.max(1, sess.curDiff - 1);
 }
 
 function totalPlanned(sess) {
   return sess.plan.reduce(function (n, s) {
-    var avail = (QUESTIONS_BY_DOMAIN[s.dom] || []).length;
+    var avail = (CHALLENGES_BY_DOMAIN[s.dom] || []).length;
     return n + Math.min(s.n, avail);
   }, 0);
 }
@@ -176,13 +182,14 @@ function scoreAssessment(sess, parsed, trackId) {
   sess.answers.forEach(function (a) {
     if (!byDom[a.dom]) byDom[a.dom] = { wc: 0, wt: 0, n: 0, right: 0, maxRight: 0, missedEasy: false };
     var w = a.d;
+    var sc = typeof a.score === "number" ? a.score : (a.correct ? 1 : 0);
     byDom[a.dom].wt += w;
     byDom[a.dom].n++;
-    if (a.correct) {
-      byDom[a.dom].wc += w;
+    byDom[a.dom].wc += w * sc;
+    if (sc >= 0.99) {
       byDom[a.dom].right++;
       byDom[a.dom].maxRight = Math.max(byDom[a.dom].maxRight, a.d);
-    } else if (a.d === 1) {
+    } else if (a.d === 1 && sc <= 0.5) {
       byDom[a.dom].missedEasy = true;
     }
   });
@@ -227,12 +234,14 @@ function scoreAssessment(sess, parsed, trackId) {
   });
   var readiness = den ? Math.round((num / den) * 100) : 0;
   var correct = sess.answers.filter(function (a) { return a.correct; }).length;
+  var skipped = !!sess.skipped;
 
   return {
     trackId: trackId,
     domains: result,
     readiness: readiness,
     correct: correct,
+    skipped: skipped,
     total: sess.answers.length,
     band: readiness >= 85 ? "Role ready" :
           readiness >= 70 ? "Nearly ready" :
@@ -322,4 +331,13 @@ function radarSVG(score, size) {
     '<polygon points="' + benchPts + '" class="rx-bench" stroke-width="1.8" stroke-dasharray="5 4"/>' +
     '<polygon points="' + youPts + '" class="rx-you" stroke-width="2.4"/>' +
     labels + '</svg>';
+}
+
+
+/* Resume-only assessment. Nothing is verified, so every level is capped at
+   Developing: a resume can show exposure but it cannot demonstrate judgement.
+   The gap report says so plainly rather than quietly inflating the result. */
+function scoreResumeOnly(parsed, trackId) {
+  var sess = { trackId: trackId, plan: [], asked: [], answers: [], di: 0, qi: 0, curDiff: 2, skipped: true };
+  return scoreAssessment(sess, parsed, trackId);
 }

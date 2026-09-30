@@ -1,0 +1,9 @@
+{
+  "name": "elevate-scc-west",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Elevate — competency assessment and learning path for Supply Chain Canada West",
+  "dependencies": {
+    "cheerio": "^1.0.0"
+  }
+}

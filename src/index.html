@@ -20,12 +20,13 @@
 <body>
 <div id="app"></div>
 <script src="vendor/data-core.js"></script>
-<script src="vendor/data-questions.js"></script>
+<script src="js/challenges.js"></script>
 <script src="vendor/courses.js"></script>
 <script src="vendor/courses-bc.js"></script>
 <script src="js/engine.js"></script>
+<script src="js/play.js"></script>
 <script>
-window.__elevateReady = (typeof COURSES !== "undefined" && typeof QUESTIONS !== "undefined" && typeof DOMAINS !== "undefined");
+window.__elevateReady = (typeof COURSES !== "undefined" && typeof CHALLENGES !== "undefined" && typeof DOMAINS !== "undefined");
 if (!window.__elevateReady) {
   document.getElementById("app").innerHTML =
     '<div style="font-family:&quot;Source Sans 3&quot;,system-ui,sans-serif;max-width:620px;margin:90px auto;padding:0 20px;color:#141416">' +
