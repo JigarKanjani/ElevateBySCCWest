@@ -468,18 +468,23 @@ img, svg, canvas { max-width:100%; height:auto; }
    unreadably long lines; only the data-dense report takes the full width.
    Nothing here applies below 1400px, so phone and tablet are untouched.
  * ------------------------------------------------------------------ */
-@media(min-width:1400px) {
-  html { font-size:17px; }
-  :root { --max:1340px; }
-}
-@media(min-width:1700px) {
-  html { font-size:18px; }
-  :root { --max:1500px; }
-}
-@media(min-width:2000px) {
-  html { font-size:19px; }
-  :root { --max:1620px; }
-}
+/* The previous 17/18/19px steps were far too timid: on a ~1900px laptop the
+   page only felt right at 200% browser zoom, which is a ~950px effective
+   viewport with double-size text. That is the target, reproduced natively.
+
+   One fluid rule does it. At 1.5vw the root size reaches ~29px on a 1900px
+   screen — close to the 32 device-pixels that 200% zoom was producing — and
+   every rem-based size follows: type, padding, gaps, radii, the lot.
+
+   The 16px floor is what keeps the foundation intact. 1.5vw only exceeds 16px
+   above 1067px, so phones and tablets resolve to exactly 16px and nothing
+   below that width changes at all. Prose keeps its ch-based caps, which scale
+   with the font, so a bigger page does not mean longer lines. */
+html { font-size:clamp(16px, 1.5vw, 30px); }
+
+/* Content fills more of the screen to match, with the gutter staying modest
+   instead of stranding 180px on each side. */
+@media(min-width:1200px) { :root { --max:min(1820px, 94vw); } }
 /* .wrap-wide is retained as a no-op alias: one width keeps the topbar, hero
    and report on the same left edge. Two widths put the logo 100px inboard of
    the report underneath it, which read as a broken grid. */
@@ -925,3 +930,41 @@ img, svg, canvas { max-width:100%; height:auto; }
 .notice-row { display:grid; gap:12px; margin-bottom:22px; }
 @media(min-width:1100px) { .notice-row { grid-template-columns:1fr 1fr; align-items:start; } }
 .notice-row > .notice { max-width:none; margin:0; }
+
+/* ------------------------------------------------------------------ *
+   Scaling the root exposes every box sized in fixed pixels: the circle
+   stays 25px while the glyph inside it grows with the font, so the tick
+   and the step number spill out. Anything that holds scaled text, or
+   sits beside it, is re-expressed in em/rem so it grows in step.
+   Hairlines, borders and rings stay in px on purpose — they should stay
+   hairlines at any size.
+ * ------------------------------------------------------------------ */
+.step .dot { width:1.6em; height:1.6em; font-size:.8rem; }
+.step { font-size:.84rem; }
+.toc-l .tick { width:1.1rem; height:1.1rem; font-size:.6rem; }
+.ordernum { width:1.55em; height:1.55em; font-size:.8rem; }
+.pickopt:before { width:1.15em; height:1.15em; }
+.skillrow .ic { width:1.9em; }
+.bar { width:8.5em; height:.45em; }
+@media(max-width:620px){ .bar { width:4.6em; } }
+.levelbar i { height:.56em; }
+.numin { width:7.5em; }
+.evdate { width:3.1em; }
+@media(max-width:560px){ .evdate { width:2.9em; } }
+.track-wrap { height:1.7em; }
+.track-claim { width:.62em; height:.62em; margin-left:-.31em; top:.56em; }
+.track-bg, .track-need, .track-have { top:.38em; bottom:.38em; }
+
+/* The logo is an image, not text, but it sits in a lockup with the
+   wordmark — leaving it at 44px made it shrink visually as the type grew.
+   It scales with the type and never drops below the 44px floor that
+   guide 02.2 requires for the mark to stay legible. */
+.brand-mark { width:max(44px, 2.5rem); height:max(44px, 2.5rem); }
+.foot-brand img { width:max(44px, 2.5rem); height:max(44px, 2.5rem); }
+
+/* The step dot and the order badge centre a single glyph in a circle. Both
+   inherited body line-height (1.6), so the glyph box was ~2px taller than the
+   circle and the tick clipped at the bottom — at every width, including 16px
+   root, so this predates the scaling work. line-height:1 makes the glyph box
+   match the circle it sits in. */
+.step .dot, .ordernum, .toc-l .tick { line-height:1; }
